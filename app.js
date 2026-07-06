@@ -747,43 +747,71 @@
     }
 
     // background song via YouTube — only an 11-char video id is stored,
-    // so the song adds almost nothing to the gift link. The player is
-    // inserted the instant the letter is revealed: the reveal is a real
-    // tap, and the iframe carries autoplay=1 + allow="autoplay", which
-    // is the combination browsers need to start playing with sound.
+    // so the song adds almost nothing to the gift link. The audio comes
+    // from a real YouTube player (built with the IFrame API so we can
+    // drive play/pause), but it's hidden behind a spinning vinyl record
+    // that acts as the play button. On reveal we try to autoplay; where
+    // the browser blocks unmuted autoplay (common on phones), one tap on
+    // the record starts it.
     const songId = (data.song && /^[\w-]{11}$/.test(data.song)) ? data.song : '';
-    let songStarted = false;
+    let ytPlayer = null, songStarted = false;
     function initSong() {
-      // warm up the connection during the flower intro so the song
-      // starts faster once revealed
-      if (!songId || document.getElementById('yt-preconnect')) return;
-      ['https://www.youtube.com', 'https://www.google.com', 'https://i.ytimg.com'].forEach((href, n) => {
-        const l = document.createElement('link');
-        l.rel = 'preconnect';
-        l.href = href;
-        if (n === 0) l.id = 'yt-preconnect';
-        document.head.appendChild(l);
+      // load the IFrame API during the flower intro so the player is
+      // ready the moment the letter is revealed
+      if (!songId || document.getElementById('yt-api')) return;
+      const s = document.createElement('script');
+      s.id = 'yt-api';
+      s.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(s);
+    }
+    function buildPlayer() {
+      if (ytPlayer || !songId || !window.YT || !window.YT.Player) return;
+      ytPlayer = new YT.Player('ytPlayer', {
+        videoId: songId,
+        playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0 },
+        events: {
+          onReady: (e) => { try { e.target.playVideo(); } catch (_) {} },
+          onStateChange: (e) => {
+            const dock = $('songDock');
+            if (dock) dock.classList.toggle('playing', e.data === 1); // 1 = playing
+            if (e.data === 0 && ytPlayer.seekTo) { ytPlayer.seekTo(0); ytPlayer.playVideo(); } // loop
+          }
+        }
       });
     }
     function startSong() {
       if (!songId || songStarted) return;
       songStarted = true;
       const dock = $('songDock');
-      const frame = dock && dock.querySelector('.song-frame');
-      if (!frame) return;
-      dock.classList.remove('hidden'); // must be visible before we insert
-      frame.innerHTML = '<iframe id="ytPlayer" width="100%" height="100%" '
-        + 'src="https://www.youtube.com/embed/' + songId
-        + '?autoplay=1&playsinline=1&rel=0&modestbranding=1" '
-        + 'title="background song" frameborder="0" '
-        + 'allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+      if (dock) dock.classList.remove('hidden'); // visible before the player is built
+      if (window.YT && window.YT.Player) {
+        buildPlayer();
+      } else {
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); buildPlayer(); };
+      }
     }
     function stopSong() {
-      const dock = $('songDock');
-      const frame = dock && dock.querySelector('.song-frame');
-      if (frame) frame.innerHTML = ''; // removing the iframe stops playback
-      if (dock) dock.classList.add('hidden');
+      if (ytPlayer && ytPlayer.destroy) { try { ytPlayer.destroy(); } catch (_) {} }
+      ytPlayer = null;
       songStarted = false;
+      const dock = $('songDock');
+      if (dock) {
+        dock.classList.add('hidden');
+        dock.classList.remove('playing');
+        const frame = dock.querySelector('.song-frame');
+        if (frame) frame.innerHTML = '<div id="ytPlayer"></div>';
+      }
+    }
+    // tap the vinyl to toggle play/pause
+    const vinylBtn = $('vinylBtn');
+    if (vinylBtn && !vinylBtn.dataset.wired) {
+      vinylBtn.dataset.wired = '1';
+      vinylBtn.addEventListener('click', () => {
+        if (!ytPlayer || !ytPlayer.getPlayerState) { startSong(); return; }
+        if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo();
+        else ytPlayer.playVideo();
+      });
     }
 
     const stage = $('giftStage');
@@ -1773,30 +1801,108 @@ body.card-mode.theme-night .card-board::before {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* background-song player, tucked at the corner of the revealed card */
+/* background-song player styled as a little spinning record ----------
+   The real YouTube player sits underneath, clipped to a circle, and the
+   vinyl art is layered on top so all you see is the record. Tapping it
+   plays/pauses; it spins only while the song is playing. */
 .song-dock {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: 18px;
+  bottom: 18px;
   z-index: 72;
-  width: 232px;
-  max-width: 62vw;
-  background: rgba(20, 24, 14, 0.78);
-  border-radius: 14px;
-  padding: 8px 8px 9px;
-  box-shadow: 0 10px 26px rgba(10, 14, 8, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 14px 11px;
+  background: rgba(20, 24, 14, 0.8);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(10, 14, 8, 0.55);
   animation: dockIn 0.6s ease 0.3s both;
 }
 @keyframes dockIn {
   from { opacity: 0; transform: translateY(14px) scale(0.92); }
   to   { opacity: 1; transform: none; }
 }
+.turntable {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  flex: 0 0 auto;
+}
+/* the YouTube player: full-size but clipped to the record's circle and
+   hidden beneath the vinyl (kept on-screen so audio plays reliably) */
+.song-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #111;
+}
+.song-frame iframe,
+.song-frame #ytPlayer {
+  position: absolute;
+  inset: -30%;
+  width: 160%;
+  height: 160%;
+  border: 0;
+}
+.vinyl {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, #191919 0 1.5px, #232323 1.5px 3px);
+  box-shadow: inset 0 0 0 2px #050505, inset 0 0 14px rgba(0, 0, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.5);
+  animation: vinylSpin 3.6s linear infinite;
+  animation-play-state: paused;
+}
+.song-dock.playing .vinyl { animation-play-state: running; }
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
+.vinyl-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(125deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 66%, rgba(255,255,255,0.09) 100%);
+}
+.vinyl-label {
+  position: absolute;
+  inset: 33%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, var(--note-accent, #d98ba2), #9c5772);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.vinyl-hole {
+  position: absolute;
+  inset: 46.5%;
+  border-radius: 50%;
+  background: #0c0c0c;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.vinyl-btn {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
+.vinyl-btn .ic-pause { display: none; }
+.song-dock.playing .vinyl-btn .ic-play { display: none; }
+.song-dock.playing .vinyl-btn .ic-pause { display: block; }
+/* the control fades back while playing, and is clear when paused */
+.song-dock.playing .vinyl-btn svg { opacity: 0; }
+.turntable:hover .vinyl-btn svg { opacity: 0.95; }
 .song-now {
-  margin: 0 0 6px;
-  padding: 0 2px;
+  margin: 0;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #f4ead6;
   display: flex;
@@ -1805,24 +1911,12 @@ body.card-mode.theme-night .card-board::before {
 }
 .song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-.song-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 9px;
-  overflow: hidden;
-  background: #000;
-}
-.song-frame iframe,
-.song-frame #ytPlayer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
 @media (max-width: 420px) {
-  .song-dock { width: 190px; right: 10px; bottom: 10px; }
+  .song-dock { right: 12px; bottom: 12px; }
+  .turntable { width: 96px; height: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vinyl { animation: none; }
 }
 
 /* card action buttons (save image / replay) */
@@ -1987,8 +2081,15 @@ ${FLOWER_SPRITE}
   </div>
   <div class="lightbox hidden" id="lightbox"><img id="lightboxImg" alt=""></div>
   <div class="song-dock hidden" id="songDock">
+    <div class="turntable">
+      <div class="song-frame"><div id="ytPlayer"></div></div>
+      <div class="vinyl"><span class="vinyl-shine"></span><span class="vinyl-label"></span><span class="vinyl-hole"></span></div>
+      <button type="button" class="vinyl-btn" id="vinylBtn" aria-label="Play or pause the song">
+        <svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>
+        <svg class="ic-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="7.5" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/><rect x="13.3" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+    </div>
     <p class="song-now"><span class="song-note">♪</span> now playing</p>
-    <div class="song-frame"><div id="ytPlayer"></div></div>
   </div>
   <p class="gift-footer"><span class="icon">${petal('rose')}</span>sent with love</p>
 </main>

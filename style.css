@@ -769,30 +769,108 @@ body.card-mode.theme-night .card-board::before {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* background-song player, tucked at the corner of the revealed card */
+/* background-song player styled as a little spinning record ----------
+   The real YouTube player sits underneath, clipped to a circle, and the
+   vinyl art is layered on top so all you see is the record. Tapping it
+   plays/pauses; it spins only while the song is playing. */
 .song-dock {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: 18px;
+  bottom: 18px;
   z-index: 72;
-  width: 232px;
-  max-width: 62vw;
-  background: rgba(20, 24, 14, 0.78);
-  border-radius: 14px;
-  padding: 8px 8px 9px;
-  box-shadow: 0 10px 26px rgba(10, 14, 8, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 14px 11px;
+  background: rgba(20, 24, 14, 0.8);
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(10, 14, 8, 0.55);
   animation: dockIn 0.6s ease 0.3s both;
 }
 @keyframes dockIn {
   from { opacity: 0; transform: translateY(14px) scale(0.92); }
   to   { opacity: 1; transform: none; }
 }
+.turntable {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  flex: 0 0 auto;
+}
+/* the YouTube player: full-size but clipped to the record's circle and
+   hidden beneath the vinyl (kept on-screen so audio plays reliably) */
+.song-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #111;
+}
+.song-frame iframe,
+.song-frame #ytPlayer {
+  position: absolute;
+  inset: -30%;
+  width: 160%;
+  height: 160%;
+  border: 0;
+}
+.vinyl {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%, #191919 0 1.5px, #232323 1.5px 3px);
+  box-shadow: inset 0 0 0 2px #050505, inset 0 0 14px rgba(0, 0, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.5);
+  animation: vinylSpin 3.6s linear infinite;
+  animation-play-state: paused;
+}
+.song-dock.playing .vinyl { animation-play-state: running; }
+@keyframes vinylSpin { to { transform: rotate(360deg); } }
+.vinyl-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(125deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 66%, rgba(255,255,255,0.09) 100%);
+}
+.vinyl-label {
+  position: absolute;
+  inset: 33%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 38%, var(--note-accent, #d98ba2), #9c5772);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.vinyl-hole {
+  position: absolute;
+  inset: 46.5%;
+  border-radius: 50%;
+  background: #0c0c0c;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.vinyl-btn {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
+.vinyl-btn .ic-pause { display: none; }
+.song-dock.playing .vinyl-btn .ic-play { display: none; }
+.song-dock.playing .vinyl-btn .ic-pause { display: block; }
+/* the control fades back while playing, and is clear when paused */
+.song-dock.playing .vinyl-btn svg { opacity: 0; }
+.turntable:hover .vinyl-btn svg { opacity: 0.95; }
 .song-now {
-  margin: 0 0 6px;
-  padding: 0 2px;
+  margin: 0;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #f4ead6;
   display: flex;
@@ -801,24 +879,12 @@ body.card-mode.theme-night .card-board::before {
 }
 .song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-.song-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 9px;
-  overflow: hidden;
-  background: #000;
-}
-.song-frame iframe,
-.song-frame #ytPlayer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
 @media (max-width: 420px) {
-  .song-dock { width: 190px; right: 10px; bottom: 10px; }
+  .song-dock { right: 12px; bottom: 12px; }
+  .turntable { width: 96px; height: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vinyl { animation: none; }
 }
 
 /* card action buttons (save image / replay) */
