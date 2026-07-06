@@ -748,38 +748,42 @@
 
     // background song via YouTube — only an 11-char video id is stored,
     // so the song adds almost nothing to the gift link. The player is
-    // built during the flower intro so it's ready to play the instant
-    // the letter is revealed (that tap is the gesture browsers require
-    // to allow sound).
+    // inserted the instant the letter is revealed: the reveal is a real
+    // tap, and the iframe carries autoplay=1 + allow="autoplay", which
+    // is the combination browsers need to start playing with sound.
     const songId = (data.song && /^[\w-]{11}$/.test(data.song)) ? data.song : '';
-    let ytPlayer = null, ytReady = false, songStarted = false;
+    let songStarted = false;
     function initSong() {
-      if (!songId || ytPlayer || window.__bloomYTinit) return;
-      window.__bloomYTinit = true;
-      const build = () => {
-        if (ytPlayer || !window.YT || !window.YT.Player) return;
-        ytPlayer = new YT.Player('ytPlayer', {
-          videoId: songId,
-          playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
-          events: { onReady: () => { ytReady = true; if (songStarted) ytPlayer.playVideo(); } }
-        });
-      };
-      if (window.YT && window.YT.Player) { build(); return; }
-      if (!document.getElementById('yt-api')) {
-        const s = document.createElement('script');
-        s.id = 'yt-api';
-        s.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(s);
-      }
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); build(); };
+      // warm up the connection during the flower intro so the song
+      // starts faster once revealed
+      if (!songId || document.getElementById('yt-preconnect')) return;
+      ['https://www.youtube.com', 'https://www.google.com', 'https://i.ytimg.com'].forEach((href, n) => {
+        const l = document.createElement('link');
+        l.rel = 'preconnect';
+        l.href = href;
+        if (n === 0) l.id = 'yt-preconnect';
+        document.head.appendChild(l);
+      });
     }
     function startSong() {
       if (!songId || songStarted) return;
       songStarted = true;
       const dock = $('songDock');
-      if (dock) dock.classList.remove('hidden');
-      if (ytReady && ytPlayer) ytPlayer.playVideo();
+      const frame = dock && dock.querySelector('.song-frame');
+      if (!frame) return;
+      dock.classList.remove('hidden'); // must be visible before we insert
+      frame.innerHTML = '<iframe id="ytPlayer" width="100%" height="100%" '
+        + 'src="https://www.youtube.com/embed/' + songId
+        + '?autoplay=1&playsinline=1&rel=0&modestbranding=1" '
+        + 'title="background song" frameborder="0" '
+        + 'allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+    }
+    function stopSong() {
+      const dock = $('songDock');
+      const frame = dock && dock.querySelector('.song-frame');
+      if (frame) frame.innerHTML = ''; // removing the iframe stops playback
+      if (dock) dock.classList.add('hidden');
+      songStarted = false;
     }
 
     const stage = $('giftStage');
@@ -861,10 +865,7 @@
         cv.classList.remove('revealed');
         document.body.classList.remove('card-mode');
         // stop and rearm the song so it plays again on the next reveal
-        if (ytPlayer && ytPlayer.stopVideo) { try { ytPlayer.stopVideo(); } catch (e) {} }
-        songStarted = false;
-        const dock = $('songDock');
-        if (dock) dock.classList.add('hidden');
+        stopSong();
         // bring the sealed envelope back and reset its open state
         envelope.classList.remove('open-flap');
         openHint.style.animation = '';
