@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bloom Letters — send a flower letter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-decor" aria-hidden="true">
+  <span class="petal-fall p1"><svg viewBox="0 0 100 100"><use href="#fl-lily-pink"/></svg></span>
+  <span class="petal-fall p2"><svg viewBox="0 0 100 100"><use href="#fl-daisy-white"/></svg></span>
+  <span class="petal-fall p3"><svg viewBox="0 0 100 100"><use href="#fl-lily-white"/></svg></span>
+  <span class="petal-fall p4"><svg viewBox="0 0 100 100"><use href="#fl-plumeria"/></svg></span>
+  <span class="petal-fall p5"><svg viewBox="0 0 100 100"><use href="#fl-zinnia"/></svg></span>
+</div>
+
+<main id="composeView" class="view">
+  <header class="brand">
+    <h1><span class="brand-mark"><svg viewBox="0 0 100 100" width="36" height="36" aria-hidden="true"><use href="#fl-lily-pink"/></svg></span> Bloom&nbsp;Letters</h1>
+    <p class="tagline">Write a letter, tuck it inside a bouquet, and get a private link you can send straight to your person. The whole gift lives in the link itself — no account, nothing hosted.</p>
+  </header>
+
+  <form id="composeForm" class="card compose-card">
+    <div class="compose-divider" aria-hidden="true">
+      <svg viewBox="0 0 100 100" width="22" height="22"><use href="#fl-lily-white"/></svg>
+      <svg viewBox="0 0 100 100" width="30" height="30"><use href="#fl-lily-pink"/></svg>
+      <svg viewBox="0 0 100 100" width="22" height="22"><use href="#fl-lily-gold"/></svg>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="toName">To</label>
+        <input type="text" id="toName" maxlength="60" autocomplete="off" required>
+      </div>
+      <div class="field">
+        <label for="fromName">From</label>
+        <input type="text" id="fromName" maxlength="60" autocomplete="off" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="message">Your letter</label>
+      <textarea id="message" rows="7" maxlength="1500" required></textarea>
+    </div>
+
+    <div class="field">
+      <label>Card theme</label>
+      <div class="theme-row" id="themeRow">
+        <label class="theme-swatch"><input type="radio" name="theme" value="garden" checked><span class="sw sw-garden"></span>Garden</label>
+        <label class="theme-swatch"><input type="radio" name="theme" value="kraft"><span class="sw sw-kraft"></span>Kraft</label>
+        <label class="theme-swatch"><input type="radio" name="theme" value="night"><span class="sw sw-night"></span>Starry&nbsp;night</label>
+        <label class="theme-swatch"><input type="radio" name="theme" value="blush"><span class="sw sw-blush"></span>Blush</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="photos">Add photos <span class="opt">(optional)</span></label>
+      <input type="file" id="photos" class="file-input" accept="image/*" multiple>
+      <p class="muted small file-hint" id="photoHint">Up to 4 pictures — they appear on the card when the letter is revealed. Tap a photo there to enlarge it.</p>
+    </div>
+
+    <div class="field">
+      <label for="songUrl">Background song <span class="opt">(optional)</span></label>
+      <input type="text" id="songUrl" autocomplete="off" placeholder="Paste a YouTube link">
+      <p class="muted small file-hint" id="songHint">Paste any YouTube song link — it starts playing the moment the letter is revealed. Nothing is uploaded; only the song reference travels in the link.</p>
+    </div>
+
+    <div class="field">
+      <label>Reveal wording <span class="opt">(optional)</span></label>
+      <div class="field-row">
+        <input type="text" id="openText" maxlength="40" autocomplete="off" placeholder="Tap to open">
+        <input type="text" id="revealText" maxlength="40" autocomplete="off" placeholder="Tap to reveal">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="checkbox-label">
+        <input type="checkbox" id="usePassphrase">
+        Add a passphrase (only someone who knows it can read the letter)
+      </label>
+      <input type="password" id="passphrase" class="passphrase-input hidden" autocomplete="off">
+    </div>
+
+    <button type="submit" class="btn-primary">Create Gift <span class="icon"><svg viewBox="0 0 100 100" width="20" height="20" aria-hidden="true"><use href="#fl-lily-white"/></svg></span></button>
+  </form>
+
+  <section id="resultCard" class="card result-card hidden">
+    <h2>Your gift is ready</h2>
+    <p class="muted hidden" id="linkModeNote">Send this private link to your person — opening it plays the whole gift. The letter, photos and all live inside the link itself, not on any server.</p>
+    <p class="muted hidden" id="fileModeNote">A single file just downloaded to your device: <strong id="giftFileName"></strong>. Send that file itself to your person — opening it shows the envelope in their browser. <em>(You're seeing this because the app was opened from a file rather than a website; hosted on GitHub Pages it always makes a link.)</em></p>
+
+    <div class="link-row hidden" id="linkRow">
+      <input type="text" id="giftLink" readonly>
+      <button type="button" id="copyLinkBtn" class="btn-secondary">Copy</button>
+    </div>
+
+    <div class="result-actions">
+      <a id="previewLink" href="#" target="_blank" class="btn-secondary">Preview it</a>
+      <button type="button" id="resetBtn" class="btn-text">Create another</button>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== GIFT / VIEW MODE (hosted links) ===================== -->
+<main id="giftView" class="view hidden">
+  <div id="passphraseGate" class="card hidden">
+    <h2><span class="lock-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="5.5" y="10.5" width="13" height="9.5" rx="2.4" fill="currentColor"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="12" cy="14.7" r="1.4" fill="#fff"/><rect x="11.3" y="15.6" width="1.4" height="2.4" rx="0.7" fill="#fff"/></svg></span>This letter is locked</h2>
+    <p class="muted">Enter the passphrase you were given to open it.</p>
+    <form id="passphraseForm">
+      <input type="password" id="passphraseInput" placeholder="Passphrase" autocomplete="off" autofocus>
+      <button type="submit" class="btn-primary" style="width:auto;">Unlock</button>
+    </form>
+    <p id="passphraseError" class="error hidden">That passphrase didn't work. Try again.</p>
+  </div>
+
+  <div id="giftError" class="card hidden">
+    <h2>This link looks broken</h2>
+    <p class="muted">The gift couldn't be read. Ask the sender for a fresh link.</p>
+  </div>
+
+  <div id="giftStage" class="gift-stage hidden">
+    <div class="envelope" id="envelope">
+      <div class="letter-window"><svg class="env-paper" viewBox="0 0 260 160"><use href="#fl-env-paper"/></svg></div>
+      <svg class="env-pocket" viewBox="0 0 300 200"><use href="#fl-env-pocket"/></svg>
+      <div class="envelope-flap"><svg viewBox="0 0 300 112"><use href="#fl-env-flap"/></svg></div>
+      <div class="envelope-seal" id="envelopeSeal"><svg viewBox="0 0 100 100"><use href="#fl-seal"/></svg></div>
+    </div>
+    <p class="open-hint" id="openHint">Tap to open</p>
+  </div>
+
+  <div id="cardView" class="card-board hidden">
+    <div class="decor d-blob b1"></div>
+    <div class="decor d-blob b2"></div>
+    <div class="decor d-blob b3"></div>
+    <div class="decor d-record"></div>
+    <div class="decor d-scrap s1">the afternoon kept its light a little longer, pressed here between the pages like a petal &mdash; proof that ordinary hours can be saved, folded, and sent on</div>
+    <div class="decor d-scrap s2">slow down, the ink whispers; every letter is a small parcel of time, carried by hand across the quiet distance between two people</div>
+    <div class="decor d-tape t1"></div>
+    <div class="decor d-tape t2"></div>
+    <svg class="decor d-star" viewBox="0 0 44 44"><path d="M22 3 L27 16 L41 17 L30 26 L34 40 L22 32 L10 40 L14 26 L3 17 L17 16 Z"/></svg>
+    <div class="note-wrap">
+      <svg class="note-clip" viewBox="0 0 120 92" aria-hidden="true"><defs><linearGradient id="clipg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8bd7e"/><stop offset=".5" stop-color="#b3924e"/><stop offset="1" stop-color="#8f7136"/></linearGradient></defs><path fill="url(#clipg)" fill-rule="evenodd" d="M34 90 L86 90 L80 38 L74 30 L70 22 Q70 12 60 12 Q50 12 50 22 L46 30 L40 38 Z M60 26 a7 7 0 1 0 0.01 0 Z"/><rect x="30" y="86" width="60" height="6" rx="2" fill="#a3854a"/><rect x="38" y="52" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/><rect x="38" y="60" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/></svg>
+      <div class="note">
+        <p class="note-from" id="letterFrom"></p>
+        <p class="note-for" id="letterTo"></p>
+        <p class="note-body" id="letterBody"></p>
+        <p class="note-sign" id="letterSign"></p>
+        <p class="note-date" id="letterDate"></p>
+      </div>
+    </div>
+    <div class="photo-stack hidden" id="photoStack"></div>
+    <div class="tile-row" id="tileRow"></div>
+    <div class="card-actions" id="cardActions">
+      <button type="button" id="saveImgBtn" class="card-btn">Save card as image</button>
+      <button type="button" id="replayBtn" class="card-btn">Replay intro</button>
+    </div>
+  </div>
+
+  <div class="lightbox hidden" id="lightbox"><img id="lightboxImg" alt=""></div>
+
+  <div class="song-dock hidden" id="songDock">
+    <p class="song-now"><span class="song-note">♪</span> now playing</p>
+    <div class="song-frame"><div id="ytPlayer"></div></div>
+  </div>
+
+  <p class="gift-footer"><span class="icon"><svg viewBox="0 0 100 100"><use href="#fl-rose"/></svg></span>sent with love</p>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
