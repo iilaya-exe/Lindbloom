@@ -758,7 +758,7 @@
     // the browser blocks unmuted autoplay (common on phones), one tap on
     // the record starts it.
     const songId = (data.song && /^[\w-]{11}$/.test(data.song)) ? data.song : '';
-    let ytPlayer = null, songStarted = false;
+    let ytPlayer = null, songStarted = false, soundPoll = null;
     function initSong() {
       // load the IFrame API during the flower intro so the player is
       // ready the moment the letter is revealed
@@ -768,17 +768,41 @@
       s.src = 'https://www.youtube.com/iframe_api';
       document.head.appendChild(s);
     }
+    // reflect muted state on the dock so the record can invite a tap for
+    // sound where the browser blocked unmuted autoplay
+    function reflectSound() {
+      const dock = $('songDock');
+      if (!dock || !ytPlayer || !ytPlayer.isMuted) return;
+      let muted = true;
+      try { muted = ytPlayer.isMuted() || ytPlayer.getVolume() === 0; } catch (_) {}
+      dock.classList.toggle('muted', muted);
+      const now = dock.querySelector('.song-now');
+      if (now) {
+        now.innerHTML = muted
+          ? '<span class="song-note">🔈</span> tap for sound'
+          : '<span class="song-note">♪</span> now playing';
+      }
+    }
     function buildPlayer() {
       if (ytPlayer || !songId || !window.YT || !window.YT.Player) return;
       ytPlayer = new YT.Player('ytPlayer', {
         videoId: songId,
-        playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0 },
+        // Muted autoplay is always permitted, so the record starts
+        // spinning at once. We then try to unmute (succeeds on many
+        // desktops); where it's blocked, a tap on the record unmutes.
+        // loop+playlist makes the song repeat.
+        playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0, loop: 1, playlist: songId },
         events: {
-          onReady: (e) => { try { e.target.playVideo(); } catch (_) {} },
+          onReady: (e) => {
+            try { e.target.playVideo(); } catch (_) {}
+            setTimeout(() => { try { e.target.unMute(); e.target.setVolume(100); } catch (_) {} reflectSound(); }, 300);
+            clearInterval(soundPoll);
+            soundPoll = setInterval(reflectSound, 800);
+          },
           onStateChange: (e) => {
             const dock = $('songDock');
             if (dock) dock.classList.toggle('playing', e.data === 1); // 1 = playing
-            if (e.data === 0 && ytPlayer.seekTo) { ytPlayer.seekTo(0); ytPlayer.playVideo(); } // loop
+            reflectSound();
           }
         }
       });
@@ -796,23 +820,34 @@
       }
     }
     function stopSong() {
+      clearInterval(soundPoll);
       if (ytPlayer && ytPlayer.destroy) { try { ytPlayer.destroy(); } catch (_) {} }
       ytPlayer = null;
       songStarted = false;
       const dock = $('songDock');
       if (dock) {
         dock.classList.add('hidden');
-        dock.classList.remove('playing');
+        dock.classList.remove('playing', 'muted');
         const frame = dock.querySelector('.song-frame');
         if (frame) frame.innerHTML = '<div id="ytPlayer"></div>';
+        const now = dock.querySelector('.song-now');
+        if (now) now.innerHTML = '<span class="song-note">♪</span> now playing';
       }
     }
-    // tap the vinyl to toggle play/pause
+    // tap the record: unmute first (this tap is the gesture that lets
+    // sound through), then it toggles play/pause
     const vinylBtn = $('vinylBtn');
     if (vinylBtn && !vinylBtn.dataset.wired) {
       vinylBtn.dataset.wired = '1';
       vinylBtn.addEventListener('click', () => {
         if (!ytPlayer || !ytPlayer.getPlayerState) { startSong(); return; }
+        let muted = true;
+        try { muted = ytPlayer.isMuted() || ytPlayer.getVolume() === 0; } catch (_) {}
+        if (muted) {
+          try { ytPlayer.unMute(); ytPlayer.setVolume(100); ytPlayer.playVideo(); } catch (_) {}
+          reflectSound();
+          return;
+        }
         if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo();
         else ytPlayer.playVideo();
       });
@@ -1952,9 +1987,25 @@ body.card-mode.theme-night .card-board::before {
 }
 .song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+/* when the browser blocked sound, pulse the record and brighten the
+   label so it clearly invites a tap */
+.song-dock.muted .turntable {
+  border-radius: 50%;
+  animation: tapForSound 1.5s ease-in-out infinite;
+}
+.song-dock.muted .song-now { color: #ffe0a3; }
+.song-dock.muted .vinyl-btn .ic-play { display: block; opacity: 0.95; }
+.song-dock.muted .vinyl-btn .ic-pause { display: none; }
+@keyframes tapForSound {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 163, 0); }
+  50% { box-shadow: 0 0 0 5px rgba(255, 224, 163, 0.35); }
+}
 @media (max-width: 420px) {
   .song-dock { right: 12px; bottom: 12px; }
   .turntable { width: 96px; height: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .song-dock.muted .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
 }
 @media (prefers-reduced-motion: reduce) {
   .vinyl { animation: none; }
