@@ -886,11 +886,15 @@ body.card-mode.theme-night .card-board::before {
 }
 .vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
 .vinyl-btn .ic-pause { display: none; }
+.vinyl-btn .ic-play { opacity: 0.95; }
 .song-dock.playing .vinyl-btn .ic-play { display: none; }
 .song-dock.playing .vinyl-btn .ic-pause { display: block; }
-/* the control fades back while playing, and is clear when paused */
+/* the control fades back while playing, and is clear when idle/paused */
 .song-dock.playing .vinyl-btn svg { opacity: 0; }
 .turntable:hover .vinyl-btn svg { opacity: 0.95; }
+/* built but not yet revealed: present (so the iframe initialises) but
+   invisible and non-interactive */
+.song-dock.arming { opacity: 0; pointer-events: none; }
 .song-now {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -904,25 +908,23 @@ body.card-mode.theme-night .card-board::before {
 }
 .song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-/* when the browser blocked sound, pulse the record and brighten the
-   label so it clearly invites a tap */
-.song-dock.muted .turntable {
+/* until it's actually playing, pulse the record and brighten the label
+   so it clearly invites a tap to play */
+.song-dock:not(.playing):not(.arming) .turntable {
   border-radius: 50%;
-  animation: tapForSound 1.5s ease-in-out infinite;
+  animation: tapForSound 1.6s ease-in-out infinite;
 }
-.song-dock.muted .song-now { color: #ffe0a3; }
-.song-dock.muted .vinyl-btn .ic-play { display: block; opacity: 0.95; }
-.song-dock.muted .vinyl-btn .ic-pause { display: none; }
+.song-dock:not(.playing) .song-now { color: #ffe0a3; }
 @keyframes tapForSound {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 163, 0); }
-  50% { box-shadow: 0 0 0 5px rgba(255, 224, 163, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 224, 163, 0.4); }
 }
 @media (max-width: 420px) {
   .song-dock { right: 12px; bottom: 12px; }
   .turntable { width: 96px; height: 96px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .song-dock.muted .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
+  .song-dock:not(.playing) .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
 }
 @media (prefers-reduced-motion: reduce) {
   .vinyl { animation: none; }

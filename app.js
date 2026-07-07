@@ -758,98 +758,91 @@
     // the browser blocks unmuted autoplay (common on phones), one tap on
     // the record starts it.
     const songId = (data.song && /^[\w-]{11}$/.test(data.song)) ? data.song : '';
-    let ytPlayer = null, songStarted = false, soundPoll = null;
+    let ytPlayer = null, ytReady = false, wantPlay = false;
+    // Build the player DURING the flower intro (dock present but invisible
+    // via .arming) so it's fully ready by the time the letter is revealed.
+    // iOS Safari won't start a YouTube embed from a delayed callback, so
+    // the actual play() is fired from the reveal tap / a tap on the record
+    // — a real user gesture on a ready player, which iOS accepts.
     function initSong() {
-      // load the IFrame API during the flower intro so the player is
-      // ready the moment the letter is revealed
-      if (!songId || document.getElementById('yt-api')) return;
-      const s = document.createElement('script');
-      s.id = 'yt-api';
-      s.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(s);
-    }
-    // reflect muted state on the dock so the record can invite a tap for
-    // sound where the browser blocked unmuted autoplay
-    function reflectSound() {
+      if (!songId) return;
       const dock = $('songDock');
-      if (!dock || !ytPlayer || !ytPlayer.isMuted) return;
-      let muted = true;
-      try { muted = ytPlayer.isMuted() || ytPlayer.getVolume() === 0; } catch (_) {}
-      dock.classList.toggle('muted', muted);
-      const now = dock.querySelector('.song-now');
-      if (now) {
-        now.innerHTML = muted
-          ? '<span class="song-note">🔈</span> tap for sound'
-          : '<span class="song-note">♪</span> now playing';
+      if (dock && dock.classList.contains('hidden')) {
+        dock.classList.remove('hidden');
+        dock.classList.add('arming');
       }
+      if (window.YT && window.YT.Player) { buildPlayer(); return; }
+      if (!document.getElementById('yt-api')) {
+        const s = document.createElement('script');
+        s.id = 'yt-api';
+        s.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(s);
+      }
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); buildPlayer(); };
     }
     function buildPlayer() {
       if (ytPlayer || !songId || !window.YT || !window.YT.Player) return;
       ytPlayer = new YT.Player('ytPlayer', {
         videoId: songId,
-        // Muted autoplay is always permitted, so the record starts
-        // spinning at once. We then try to unmute (succeeds on many
-        // desktops); where it's blocked, a tap on the record unmutes.
-        // loop+playlist makes the song repeat.
-        playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1, controls: 0, loop: 1, playlist: songId },
+        playerVars: { playsinline: 1, rel: 0, modestbranding: 1, controls: 0, loop: 1, playlist: songId },
         events: {
-          onReady: (e) => {
-            try { e.target.playVideo(); } catch (_) {}
-            setTimeout(() => { try { e.target.unMute(); e.target.setVolume(100); } catch (_) {} reflectSound(); }, 300);
-            clearInterval(soundPoll);
-            soundPoll = setInterval(reflectSound, 800);
-          },
+          onReady: () => { ytReady = true; if (wantPlay) doPlay(); },
           onStateChange: (e) => {
             const dock = $('songDock');
-            if (dock) dock.classList.toggle('playing', e.data === 1); // 1 = playing
-            reflectSound();
+            if (!dock) return;
+            const playing = e.data === 1;
+            dock.classList.toggle('playing', playing);
+            const now = dock.querySelector('.song-now');
+            if (now) {
+              now.innerHTML = playing
+                ? '<span class="song-note">♪</span> now playing'
+                : '<span class="song-note">▸</span> tap to play';
+            }
           }
         }
       });
     }
+    function doPlay() {
+      if (!ytPlayer) return;
+      try { ytPlayer.unMute(); ytPlayer.setVolume(100); ytPlayer.playVideo(); } catch (_) {}
+    }
+    // called from the reveal tap (a user gesture)
     function startSong() {
-      if (!songId || songStarted) return;
-      songStarted = true;
+      if (!songId) return;
       const dock = $('songDock');
-      if (dock) dock.classList.remove('hidden'); // visible before the player is built
-      if (window.YT && window.YT.Player) {
-        buildPlayer();
-      } else {
-        const prev = window.onYouTubeIframeAPIReady;
-        window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); buildPlayer(); };
+      if (dock) {
+        dock.classList.remove('hidden', 'arming');
+        const now = dock.querySelector('.song-now');
+        if (now) now.innerHTML = '<span class="song-note">▸</span> tap to play';
       }
+      wantPlay = true;
+      if (ytReady) doPlay();  // ready player + this gesture = plays with sound
+      else initSong();        // still loading; will play on ready (desktop) or on a tap
     }
     function stopSong() {
-      clearInterval(soundPoll);
       if (ytPlayer && ytPlayer.destroy) { try { ytPlayer.destroy(); } catch (_) {} }
       ytPlayer = null;
-      songStarted = false;
+      ytReady = false;
+      wantPlay = false;
       const dock = $('songDock');
       if (dock) {
         dock.classList.add('hidden');
-        dock.classList.remove('playing', 'muted');
+        dock.classList.remove('playing', 'arming');
         const frame = dock.querySelector('.song-frame');
         if (frame) frame.innerHTML = '<div id="ytPlayer"></div>';
-        const now = dock.querySelector('.song-now');
-        if (now) now.innerHTML = '<span class="song-note">♪</span> now playing';
       }
     }
-    // tap the record: unmute first (this tap is the gesture that lets
-    // sound through), then it toggles play/pause
+    // tapping the record plays it (a guaranteed user gesture) or toggles
+    // play/pause once it's going
     const vinylBtn = $('vinylBtn');
     if (vinylBtn && !vinylBtn.dataset.wired) {
       vinylBtn.dataset.wired = '1';
       vinylBtn.addEventListener('click', () => {
-        if (!ytPlayer || !ytPlayer.getPlayerState) { startSong(); return; }
-        let muted = true;
-        try { muted = ytPlayer.isMuted() || ytPlayer.getVolume() === 0; } catch (_) {}
-        if (muted) {
-          try { ytPlayer.unMute(); ytPlayer.setVolume(100); ytPlayer.playVideo(); } catch (_) {}
-          reflectSound();
-          return;
-        }
+        wantPlay = true;
+        if (!ytPlayer || !ytPlayer.getPlayerState) { initSong(); return; }
         if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo();
-        else ytPlayer.playVideo();
+        else doPlay();
       });
     }
 
@@ -1969,11 +1962,15 @@ body.card-mode.theme-night .card-board::before {
 }
 .vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
 .vinyl-btn .ic-pause { display: none; }
+.vinyl-btn .ic-play { opacity: 0.95; }
 .song-dock.playing .vinyl-btn .ic-play { display: none; }
 .song-dock.playing .vinyl-btn .ic-pause { display: block; }
-/* the control fades back while playing, and is clear when paused */
+/* the control fades back while playing, and is clear when idle/paused */
 .song-dock.playing .vinyl-btn svg { opacity: 0; }
 .turntable:hover .vinyl-btn svg { opacity: 0.95; }
+/* built but not yet revealed: present (so the iframe initialises) but
+   invisible and non-interactive */
+.song-dock.arming { opacity: 0; pointer-events: none; }
 .song-now {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -1987,25 +1984,23 @@ body.card-mode.theme-night .card-board::before {
 }
 .song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-/* when the browser blocked sound, pulse the record and brighten the
-   label so it clearly invites a tap */
-.song-dock.muted .turntable {
+/* until it's actually playing, pulse the record and brighten the label
+   so it clearly invites a tap to play */
+.song-dock:not(.playing):not(.arming) .turntable {
   border-radius: 50%;
-  animation: tapForSound 1.5s ease-in-out infinite;
+  animation: tapForSound 1.6s ease-in-out infinite;
 }
-.song-dock.muted .song-now { color: #ffe0a3; }
-.song-dock.muted .vinyl-btn .ic-play { display: block; opacity: 0.95; }
-.song-dock.muted .vinyl-btn .ic-pause { display: none; }
+.song-dock:not(.playing) .song-now { color: #ffe0a3; }
 @keyframes tapForSound {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 163, 0); }
-  50% { box-shadow: 0 0 0 5px rgba(255, 224, 163, 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 224, 163, 0.4); }
 }
 @media (max-width: 420px) {
   .song-dock { right: 12px; bottom: 12px; }
   .turntable { width: 96px; height: 96px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .song-dock.muted .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
+  .song-dock:not(.playing) .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
 }
 @media (prefers-reduced-motion: reduce) {
   .vinyl { animation: none; }
