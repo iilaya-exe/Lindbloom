@@ -20,6 +20,10 @@
 
 * { box-sizing: border-box; }
 
+/* the scrapbook decor intentionally bleeds past the board's edges;
+   clip at the root so it can never cause sideways panning on phones */
+html { overflow-x: clip; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -36,6 +40,25 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* visible keyboard focus everywhere interactive */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.envelope:focus-visible,
+.flower-burst:focus-visible {
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.flower-burst:focus-visible { outline-offset: -4px; }
+
+/* calm ambience for reduced-motion users; core reveals stay handled in JS */
+@media (prefers-reduced-motion: reduce) {
+  .bg-decor { display: none; }
+  .open-hint, .song-note, .reveal-hint { animation: none; opacity: 1; }
+}
 
 /* ---------- floating background petals (compose page ambience) ---------- */
 .bg-decor {
@@ -307,7 +330,9 @@ textarea { resize: vertical; line-height: 1.5; }
   height: 210px;
   cursor: pointer;
   perspective: 1200px;
+  transition: transform 0.35s ease;
 }
+.envelope:not(.open-flap):hover { transform: translateY(-4px); }
 
 /* letter paper that rises out of the envelope once the flap opens */
 .letter-window {

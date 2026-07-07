@@ -84,13 +84,17 @@
   async function gzip(bytes) {
     const cs = new CompressionStream('gzip');
     const w = cs.writable.getWriter();
-    w.write(bytes); w.close();
+    // swallow writer rejections: a stream error also rejects the read
+    // below, which is the one we surface
+    w.write(bytes).catch(() => {});
+    w.close().catch(() => {});
     return new Uint8Array(await new Response(cs.readable).arrayBuffer());
   }
   async function gunzip(bytes) {
     const ds = new DecompressionStream('gzip');
     const w = ds.writable.getWriter();
-    w.write(bytes); w.close();
+    w.write(bytes).catch(() => {});
+    w.close().catch(() => {});
     return new Uint8Array(await new Response(ds.readable).arrayBuffer());
   }
 
@@ -970,6 +974,12 @@
       hint.style.setProperty('--hd', (maxEnd + 0.4) + 's');
       overlay.appendChild(hint);
       document.body.appendChild(overlay);
+      // keyboard users can reveal with Enter/Space too
+      overlay.tabIndex = 0;
+      overlay.focus({ preventScroll: true });
+      overlay.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); overlay.click(); }
+      });
       overlay.addEventListener('click', () => {
         if (overlay.classList.contains('falling')) return;
         overlay.classList.add('falling');
@@ -982,6 +992,12 @@
       });
     }
 
+    if (!envelope.dataset.keys) {
+      envelope.dataset.keys = '1';
+      envelope.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); envelope.click(); }
+      });
+    }
     envelope.addEventListener('click', () => {
       if (envelope.classList.contains('open-flap')) return;
       envelope.classList.add('open-flap');
@@ -1052,6 +1068,10 @@
 
 * { box-sizing: border-box; }
 
+/* the scrapbook decor intentionally bleeds past the board's edges;
+   clip at the root so it can never cause sideways panning on phones */
+html { overflow-x: clip; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -1068,6 +1088,25 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* visible keyboard focus everywhere interactive */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.envelope:focus-visible,
+.flower-burst:focus-visible {
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.flower-burst:focus-visible { outline-offset: -4px; }
+
+/* calm ambience for reduced-motion users; core reveals stay handled in JS */
+@media (prefers-reduced-motion: reduce) {
+  .bg-decor { display: none; }
+  .open-hint, .song-note, .reveal-hint { animation: none; opacity: 1; }
+}
 
 /* ---------- floating background petals (compose page ambience) ---------- */
 .bg-decor {
@@ -1339,7 +1378,9 @@ textarea { resize: vertical; line-height: 1.5; }
   height: 210px;
   cursor: pointer;
   perspective: 1200px;
+  transition: transform 0.35s ease;
 }
+.envelope:not(.open-flap):hover { transform: translateY(-4px); }
 
 /* letter paper that rises out of the envelope once the flap opens */
 .letter-window {
@@ -2044,7 +2085,7 @@ ${FLOWER_SPRITE}
     <p id="passphraseError" class="error hidden">That passphrase didn't work. Try again.</p>
   </div>
   <div id="giftStage" class="gift-stage hidden">
-    <div class="envelope" id="envelope">
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the envelope">
       <div class="letter-window"><svg class="env-paper" viewBox="0 0 260 160"><use href="#fl-env-paper"/></svg></div>
       <svg class="env-pocket" viewBox="0 0 300 200"><use href="#fl-env-pocket"/></svg>
       <div class="envelope-flap"><svg viewBox="0 0 300 112"><use href="#fl-env-flap"/></svg></div>
@@ -2188,6 +2229,7 @@ ${FLOWER_SPRITE}
       const songRaw = $('songUrl').value.trim();
       const songId = parseYouTubeId(songRaw);
       const songHint = $('songHint');
+      if (!songHint.dataset.orig) songHint.dataset.orig = songHint.textContent;
       if (songRaw && !songId) {
         songHint.classList.add('field-error');
         songHint.textContent = "That doesn't look like a YouTube link — paste one like https://youtu.be/… or leave it blank.";
@@ -2195,6 +2237,7 @@ ${FLOWER_SPRITE}
         return;
       }
       songHint.classList.remove('field-error');
+      songHint.textContent = songHint.dataset.orig;
       if (songId) data.song = songId;
       if (!data.to || !data.from || !data.message) return;
 
@@ -2235,6 +2278,7 @@ ${FLOWER_SPRITE}
           $('previewLink').href = link;
           $('linkModeNote').classList.remove('hidden');
           $('linkRow').classList.remove('hidden');
+          if (navigator.share) $('shareBtn').classList.remove('hidden');
         } else {
           // Opened straight from disk (file://) — no URL to host a link,
           // so hand back a standalone file instead.
@@ -2263,6 +2307,11 @@ ${FLOWER_SPRITE}
       } catch (e) {
         document.execCommand('copy');
       }
+    });
+
+    $('shareBtn').addEventListener('click', () => {
+      const url = $('giftLink').value;
+      if (url && navigator.share) navigator.share({ title: 'A letter for you 💐', url }).catch(() => {});
     });
 
     $('resetBtn').addEventListener('click', () => {

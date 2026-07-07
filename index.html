@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f4ead6">
+<meta property="og:title" content="A letter is waiting for you 💐">
+<meta property="og:description" content="Someone tucked a letter inside a bouquet of watercolor flowers. Tap to open it.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%90%3C/text%3E%3C/svg%3E">
 <title>Bloom Letters — send a flower letter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -101,6 +106,7 @@
 
     <div class="result-actions">
       <a id="previewLink" href="#" target="_blank" class="btn-secondary">Preview it</a>
+      <button type="button" id="shareBtn" class="btn-secondary hidden">Share…</button>
       <button type="button" id="resetBtn" class="btn-text">Create another</button>
     </div>
   </section>
@@ -124,7 +130,7 @@
   </div>
 
   <div id="giftStage" class="gift-stage hidden">
-    <div class="envelope" id="envelope">
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the envelope">
       <div class="letter-window"><svg class="env-paper" viewBox="0 0 260 160"><use href="#fl-env-paper"/></svg></div>
       <svg class="env-pocket" viewBox="0 0 300 200"><use href="#fl-env-pocket"/></svg>
       <div class="envelope-flap"><svg viewBox="0 0 300 112"><use href="#fl-env-flap"/></svg></div>

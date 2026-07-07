@@ -56,6 +56,18 @@ Leave `GIFT_API` blank to keep the pure no-backend behavior.
 - **Replay** — watch the envelope-and-flowers intro again.
 - **Optional passphrase** to lock a private letter.
 
+## Hosting on GitHub Pages (free)
+
+1. Create a GitHub account, then a new **public** repository (e.g. `bloom`).
+2. Upload `index.html`, `style.css`, and `app.js` together (Add file → Upload
+   files), in a single commit.
+3. Repo Settings → Pages → Source: **Deploy from a branch** → Branch: `main`,
+   folder `/ (root)` → Save.
+4. After a minute your app is live at `https://<username>.github.io/<repo>/`.
+
+The repository (and the compose page) will be public. That exposes the app's
+code, never your gifts — those live only in the links you create and send.
+
 ## Files
 
 - `index.html` — compose view + gift view
