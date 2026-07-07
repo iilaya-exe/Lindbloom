@@ -8,7 +8,7 @@ If you're reading this, then you found the little note I left behind.
 
 This project isn't really meant for GitHub, or for random people browsing repositories. It's meant for you.
 
-**On your last birthday**, I sent you letters using websites that other people had already built. They were beautiful, and they helped me express what I wanted to say, but afterward I kept thinking...
+On your last birthday, I sent you letters using websites that other people had already built. They were beautiful, and they helped me express what I wanted to say, but afterward I kept thinking...
 
 *"I wish I had made something for her instead."*
 
@@ -139,7 +139,7 @@ It wasn't built for a portfolio.
 
 It was built because there was someone I cared about, and I wanted to give her something that nobody else in the world could have made.
 
-**On your last birthday, I borrowed someone else's website to help me write to you. This time, I wanted every pixel to have a reason for existing.**
+On your last birthday, I borrowed someone else's website to help me write to you. This time, I wanted every pixel to have a reason for existing.
 
 So if one day you're wondering why the flowers bloom the way they do...
 
