@@ -4,119 +4,155 @@
 
 ---
 
-This website is probably the most personal thing I've ever built.
+If you're reading this, then you found the little note I left behind.
 
-Last time, when it was your birthday, I sent you letters through websites that someone else had already made. They were beautiful, and they helped me say what I wanted to say, but they never really felt like they were *mine*. Looking back, I realized I was borrowing someone else's creation to express something that belonged entirely to us.
+This project isn't really meant for GitHub, or for random people browsing repositories. It's meant for you.
 
-So... this is my redemption.
+**On your last birthday**, I sent you letters using websites that other people had already built. They were beautiful, and they helped me express what I wanted to say, but afterward I kept thinking...
 
-This time, instead of searching for the perfect website, I decided to make one.
+*"I wish I had made something for her instead."*
 
-Every animation, every flower, every little interaction, every line of code—you'll know that I built it thinking about you.
+That thought never really left me.
 
-That's what **Lindbloom** is.
+So this became my redemption.
 
-Not just another web app.
+Instead of looking for the perfect website, I spent my time building one. Not because I had to, but because I wanted every little part of it to come from me. The flowers. The envelope. The animations. The tiny details most people probably won't even notice.
 
-It's my way of writing you a letter in the language I know best.
+When you open this, you're not just opening a webpage.
+
+You're opening something I made with you constantly in the back of my mind.
 
 ---
 
-## Why I made this
+## Why I built this
 
-I wanted to give you something that couldn't be found by searching the internet.
+People always say that the best gifts are handmade.
 
-Something that only exists because *you* exist.
+This is probably the closest thing I can make with my own hands.
 
-Anyone can buy a gift. Anyone can copy a message. But building something from nothing takes time, patience, frustration, dozens of rewrites, and a lot of late nights. Somehow, that felt fitting, because you deserve more than something convenient.
+I'm not an artist who can paint you something beautiful.
 
-I wanted this to feel like opening a real letter.
+I'm not great at writing poems.
 
-One that's been waiting just for you.
+But I *can* write code.
 
-The envelope opens. Flowers bloom. The words slowly appear, almost like I'm sitting beside you saying them instead of dumping everything onto the screen at once.
+So instead of putting my feelings on paper, I tucked them into HTML, CSS, and JavaScript.
 
-If I can't always be there in person, then maybe this little website can carry a piece of me until I can.
+Maybe that's a little nerdy.
+
+But it's the most "me" way I know how to tell you that you're important to me.
 
 ---
 
 ## Why "Lindbloom"?
 
-The name just felt right.
+Honestly...
 
-Soft. Quiet. Growing.
+I don't have some deep story behind the name.
 
-Like something that blooms when it's cared for.
+I just wanted something that sounded soft.
 
-I don't really have a poetic explanation beyond that—I just knew it was the name this project was supposed to have.
+Something that felt like flowers blooming.
+
+Something gentle.
+
+"Lindbloom" was the first name that made me smile, so it stayed.
+
+Sometimes the right answer doesn't need a complicated explanation.
 
 ---
 
 ## How it works
 
-If I send you a hosted link (like GitHub Pages), it'll probably look something like:
+There's a funny thing about this website.
 
-`https://.../#g=...`
+If I send you a link, almost everything that makes it *your* letter lives after the `#` in the URL.
 
-Everything that actually matters—the letter, the photos, the theme, and everything else—is stored after the `#`.
+That means the server never actually sees it.
 
-Browsers never send that part to a server, so even though the website itself is public, the contents of your letter stay inside the link. It's a surprisingly simple trick that makes something very personal stay personal.
+The photos, the message, the theme—they travel directly with the link itself.
 
-If I ever send you the file itself instead, it's just one standalone HTML file. No installation. No accounts. No internet required after you've got it.
+I thought that was kind of poetic.
 
-Just open it.
+The website is public.
 
-That's it.
+The letter isn't.
 
-The links are compressed too, so even long letters stay surprisingly small.
+If I ever send you the HTML file instead, then everything is already inside it. No accounts. No setup. No internet after you've opened it.
 
-And if I decide to protect it with a passphrase, everything is encrypted directly in your browser using AES-GCM with PBKDF2 before it's ever viewed. I'll tell you the passphrase separately.
+Just a letter waiting for you.
 
-Some things deserve a little privacy.
+And if I decide to lock it with a passphrase, everything is encrypted right inside your browser using AES-GCM with PBKDF2 before it can be opened.
+
+Because some letters deserve to stay between two people.
 
 ---
 
 ## What's inside
 
-* Four different card themes, each with its own personality.
-* Up to four photos arranged like little Polaroids.
-* A background song from YouTube, if I choose to include one.
-* A typewriter effect that slowly reveals the letter instead of showing everything at once.
-* My signature and the date, because handwritten letters always feel more complete.
-* Custom prompts and little interactions throughout the experience.
-* The ability to save the finished card as an image.
-* A replay button, because sometimes one opening isn't enough.
+You'll find a few things I spent far too much time obsessing over:
+
+* An envelope that actually opens instead of immediately showing the message.
+* Flowers that bloom because I wanted the letter to feel alive.
+* Four themes so I could choose whichever one reminded me most of you.
+* Photos that look like little Polaroids scattered across a scrapbook.
+* A typewriter animation because reading something slowly somehow feels more personal.
+* Music if I decide the moment needs it.
+* A way to save everything as an image so you'll always have it.
+
+None of those things were *necessary*.
+
+I just thought they'd make you smile.
 
 ---
 
-## If you're curious about the code
+## Behind the scenes
 
-* `index.html` — where everything begins.
-* `style.css` — all the visual design and styling.
-* `app.js` — the heart of the project: animations, flowers, themes, logic, and the letter itself.
-* `worker.js` — an optional Cloudflare Worker for generating shorter links if I ever want to use one.
+If you're wondering where everything lives:
+
+* **index.html** — where the letter begins.
+* **style.css** — everything that makes it feel warm instead of plain.
+* **app.js** — probably where I spent most of my time.
+* **worker.js** — an optional Cloudflare Worker if I ever feel like shortening the links.
 
 ---
 
-## One last thing
+## Before you go...
 
-I didn't build **Lindbloom** because I wanted another project for my portfolio.
+I don't know if this is the best website I'll ever build.
 
-I built it because I wanted to create something that no one else could have made for you.
+Technically, it probably won't be.
 
-Every bug I fixed, every animation I adjusted, every tiny detail I obsessed over was another reminder that this wasn't just software anymore—it was becoming a gift.
+I'll learn better ways to write code.
 
-Maybe years from now this website will look outdated.
+I'll make prettier animations.
 
-Maybe there will be better animations, prettier designs, and cleaner code.
+I'll become a better developer.
 
-But I don't think any future version will ever mean as much to me as this first one, because this was the one I made for you.
+But I honestly don't think any future project will ever mean as much to me as this one.
 
-If you're reading this, thank you for giving this little project a place to exist.
+Because this wasn't built for clients.
 
-I hope it makes you smile.
+It wasn't built for grades.
 
-And I hope, whenever you open it, you can tell that every line of code came from someone who cared enough to build you something instead of borrowing someone else's words.
+It wasn't built for a portfolio.
 
-With love,
-Rhyyy
+It was built because there was someone I cared about, and I wanted to give her something that nobody else in the world could have made.
+
+**On your last birthday, I borrowed someone else's website to help me write to you. This time, I wanted every pixel to have a reason for existing.**
+
+So if one day you're wondering why the flowers bloom the way they do...
+
+Or why the envelope opens before the letter...
+
+Or why the words appear one by one...
+
+The answer is simple.
+
+Because I imagined you on the other side of the screen while I was building it.
+
+And somehow, that made every extra hour feel worth it.
+
+With all my love,
+
+**[Rhyyy]**
