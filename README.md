@@ -1,6 +1,6 @@
 # Lindbloom
 
-*For Erica.*
+**For Erica.**
 
 ---
 
@@ -155,4 +155,4 @@ And somehow, that made every extra hour feel worth it.
 
 With all my love,
 
-**[Rhyyy]**
+**Rhyyy**
