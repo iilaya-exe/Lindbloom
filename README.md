@@ -1,6 +1,6 @@
 # Lindbloom
 
-**For Erica.**
+**For Erica**
 
 ---
 
