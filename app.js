@@ -1874,10 +1874,10 @@ body.card-mode.theme-night .card-board::before {
 ${FLOWER_SPRITE}
 <div class="bg-decor" aria-hidden="true">
   <span class="petal-fall p1">${petal('lily-pink')}</span>
-  <span class="petal-fall p2">${petal('daisy-white')}</span>
-  <span class="petal-fall p3">${petal('lily-white')}</span>
-  <span class="petal-fall p4">${petal('plumeria')}</span>
-  <span class="petal-fall p5">${petal('zinnia')}</span>
+  <span class="petal-fall p2">${petal('rose')}</span>
+  <span class="petal-fall p3">${petal('dahlia-pe')}</span>
+  <span class="petal-fall p4">${petal('sunflower')}</span>
+  <span class="petal-fall p5">${petal('daisy-white')}</span>
 </div>
 <main id="giftView" class="view">
   <div id="passphraseGate" class="card hidden">
@@ -2007,10 +2007,6 @@ ${FLOWER_SPRITE}
         theme: themeInput ? themeInput.value : 'garden',
         date: new Date().toISOString()
       };
-      const openText = $('openText').value.trim();
-      const revealText = $('revealText').value.trim();
-      if (openText) data.openText = openText;
-      if (revealText) data.revealText = revealText;
       if (!data.to || !data.from || !data.message) return;
 
       const passphrase = usePassphrase.checked ? passphraseInput.value : '';

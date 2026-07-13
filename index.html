@@ -18,25 +18,19 @@
 
 <div class="bg-decor" aria-hidden="true">
   <span class="petal-fall p1"><svg viewBox="0 0 100 100"><use href="#fl-lily-pink"/></svg></span>
-  <span class="petal-fall p2"><svg viewBox="0 0 100 100"><use href="#fl-daisy-white"/></svg></span>
-  <span class="petal-fall p3"><svg viewBox="0 0 100 100"><use href="#fl-lily-white"/></svg></span>
-  <span class="petal-fall p4"><svg viewBox="0 0 100 100"><use href="#fl-plumeria"/></svg></span>
-  <span class="petal-fall p5"><svg viewBox="0 0 100 100"><use href="#fl-zinnia"/></svg></span>
+  <span class="petal-fall p2"><svg viewBox="0 0 100 100"><use href="#fl-rose"/></svg></span>
+  <span class="petal-fall p3"><svg viewBox="0 0 100 100"><use href="#fl-dahlia-pe"/></svg></span>
+  <span class="petal-fall p4"><svg viewBox="0 0 100 100"><use href="#fl-sunflower"/></svg></span>
+  <span class="petal-fall p5"><svg viewBox="0 0 100 100"><use href="#fl-daisy-white"/></svg></span>
 </div>
 
 <main id="composeView" class="view">
   <header class="brand">
-    <h1><span class="brand-mark"><svg viewBox="0 0 100 100" width="36" height="36" aria-hidden="true"><use href="#fl-lily-pink"/></svg></span> Bloom&nbsp;Letters</h1>
-    <p class="tagline">Write a letter, tuck it inside a bouquet, and get a private link you can send straight to your person. The whole gift lives in the link itself — no account, nothing hosted.</p>
+    <span class="brand-mark"><svg viewBox="0 0 100 100" width="46" height="46" aria-hidden="true"><use href="#fl-lily-pink"/></svg></span>
+    <h1>Bloom&nbsp;Letters</h1>
   </header>
 
   <form id="composeForm" class="card compose-card">
-    <div class="compose-divider" aria-hidden="true">
-      <svg viewBox="0 0 100 100" width="22" height="22"><use href="#fl-lily-white"/></svg>
-      <svg viewBox="0 0 100 100" width="30" height="30"><use href="#fl-lily-pink"/></svg>
-      <svg viewBox="0 0 100 100" width="22" height="22"><use href="#fl-lily-gold"/></svg>
-    </div>
-
     <div class="field-row">
       <div class="field">
         <label for="toName">To</label>
@@ -53,36 +47,32 @@
       <textarea id="message" rows="7" maxlength="1500" required></textarea>
     </div>
 
-    <div class="field">
-      <label>Card theme</label>
-      <div class="theme-row" id="themeRow">
-        <label class="theme-swatch"><input type="radio" name="theme" value="garden" checked><span class="sw sw-garden"></span>Garden</label>
-        <label class="theme-swatch"><input type="radio" name="theme" value="kraft"><span class="sw sw-kraft"></span>Kraft</label>
-        <label class="theme-swatch"><input type="radio" name="theme" value="night"><span class="sw sw-night"></span>Starry&nbsp;night</label>
-        <label class="theme-swatch"><input type="radio" name="theme" value="blush"><span class="sw sw-blush"></span>Blush</label>
+    <div class="form-section">
+      <p class="section-label">Personalize <span class="opt">(optional)</span></p>
+
+      <div class="field">
+        <label>Card theme</label>
+        <div class="theme-row" id="themeRow">
+          <label class="theme-swatch"><input type="radio" name="theme" value="garden" checked><span class="sw sw-garden"></span>Garden</label>
+          <label class="theme-swatch"><input type="radio" name="theme" value="kraft"><span class="sw sw-kraft"></span>Kraft</label>
+          <label class="theme-swatch"><input type="radio" name="theme" value="night"><span class="sw sw-night"></span>Starry&nbsp;night</label>
+          <label class="theme-swatch"><input type="radio" name="theme" value="blush"><span class="sw sw-blush"></span>Blush</label>
+        </div>
       </div>
-    </div>
 
-    <div class="field">
-      <label for="photos">Add photos <span class="opt">(optional)</span></label>
-      <input type="file" id="photos" class="file-input" accept="image/*" multiple>
-      <p class="muted small file-hint" id="photoHint">Up to 4 pictures — they appear on the card when the letter is revealed. Tap a photo there to enlarge it.</p>
-    </div>
-
-    <div class="field">
-      <label>Reveal wording <span class="opt">(optional)</span></label>
-      <div class="field-row">
-        <input type="text" id="openText" maxlength="40" autocomplete="off" placeholder="Tap to open">
-        <input type="text" id="revealText" maxlength="40" autocomplete="off" placeholder="Tap to reveal">
+      <div class="field">
+        <label for="photos">Add photos</label>
+        <input type="file" id="photos" class="file-input" accept="image/*" multiple>
+        <p class="muted small file-hint" id="photoHint">Up to 4 pictures — they appear on the card when the letter is revealed. Tap a photo there to enlarge it.</p>
       </div>
-    </div>
 
-    <div class="field">
-      <label class="checkbox-label">
-        <input type="checkbox" id="usePassphrase">
-        Add a passphrase (only someone who knows it can read the letter)
-      </label>
-      <input type="password" id="passphrase" class="passphrase-input hidden" autocomplete="off">
+      <div class="field field-last">
+        <label class="checkbox-label">
+          <input type="checkbox" id="usePassphrase">
+          Add a passphrase (only someone who knows it can read the letter)
+        </label>
+        <input type="password" id="passphrase" class="passphrase-input hidden" autocomplete="off">
+      </div>
     </div>
 
     <button type="submit" class="btn-primary">Create Gift <span class="icon"><svg viewBox="0 0 100 100" width="20" height="20" aria-hidden="true"><use href="#fl-lily-white"/></svg></span></button>

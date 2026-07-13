@@ -109,19 +109,20 @@ textarea:focus-visible,
   align-items: center;
 }
 
-.brand { text-align: center; margin-bottom: 28px; }
+.brand { text-align: center; margin-bottom: 30px; }
+.brand-mark {
+  display: inline-flex;
+  color: var(--rose-dark);
+  margin-bottom: 4px;
+  filter: drop-shadow(0 7px 14px rgba(192, 110, 136, 0.22));
+}
 .brand h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   color: var(--moss);
-  margin: 0 0 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  margin: 0;
+  letter-spacing: 0.01em;
 }
-.brand-mark { display: inline-flex; color: var(--rose-dark); }
-.tagline { color: #8b8069; max-width: 420px; margin: 0 auto; line-height: 1.5; }
 
 .card {
   background: var(--card);
@@ -153,21 +154,30 @@ input[type="text"], input[type="password"], textarea {
   font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
   color: var(--ink);
-  transition: border-color 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 input:focus, textarea:focus {
   outline: none;
   border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(217, 139, 162, 0.16);
 }
 textarea { resize: vertical; line-height: 1.5; }
 
-.compose-divider {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 10px;
-  margin: -4px 0 18px;
+/* grouped optional-customization block, set apart from the core letter */
+.form-section {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--card-edge);
 }
+.section-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--moss);
+  margin: 0 0 16px;
+}
+.section-label .opt { font-family: 'Poppins', sans-serif; }
+.field-last { margin-bottom: 0; }
+.compose-card .btn-primary { margin-top: 24px; }
 
 #message {
   font-family: 'Playfair Display', serif;
