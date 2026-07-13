@@ -211,7 +211,6 @@ textarea { resize: vertical; line-height: 1.5; }
 .file-input::file-selector-button:hover { background: #f3d7e0; }
 .file-hint { text-align: left; margin-top: 8px; }
 .field-error { color: #b3423c; }
-#songUrl { width: 100%; }
 
 /* card-theme picker */
 .theme-row { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -795,8 +794,8 @@ body.card-mode.theme-night .card-board::before {
 }
 
 /* background-song player styled as a little spinning record ----------
-   The real YouTube player sits underneath, clipped to a circle, and the
-   vinyl art is layered on top so all you see is the record. Tapping it
+   The uploaded audio plays from a hidden <audio> element, with the
+   vinyl art layered on top acting as the play button. Tapping it
    plays/pauses; it spins only while the song is playing. */
 .song-dock {
   position: fixed;
@@ -823,23 +822,7 @@ body.card-mode.theme-night .card-board::before {
   height: 116px;
   flex: 0 0 auto;
 }
-/* the YouTube player: full-size but clipped to the record's circle and
-   hidden beneath the vinyl (kept on-screen so audio plays reliably) */
-.song-frame {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #111;
-}
-.song-frame iframe,
-.song-frame #ytPlayer {
-  position: absolute;
-  inset: -30%;
-  width: 160%;
-  height: 160%;
-  border: 0;
-}
+#songAudio { display: none; }
 .vinyl {
   position: absolute;
   inset: 0;
@@ -892,9 +875,6 @@ body.card-mode.theme-night .card-board::before {
 /* the control fades back while playing, and is clear when idle/paused */
 .song-dock.playing .vinyl-btn svg { opacity: 0; }
 .turntable:hover .vinyl-btn svg { opacity: 0.95; }
-/* built but not yet revealed: present (so the iframe initialises) but
-   invisible and non-interactive */
-.song-dock.arming { opacity: 0; pointer-events: none; }
 .song-now {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -910,7 +890,7 @@ body.card-mode.theme-night .card-board::before {
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
 /* until it's actually playing, pulse the record and brighten the label
    so it clearly invites a tap to play */
-.song-dock:not(.playing):not(.arming) .turntable {
+.song-dock:not(.playing) .turntable {
   border-radius: 50%;
   animation: tapForSound 1.6s ease-in-out infinite;
 }

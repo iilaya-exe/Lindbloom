@@ -70,9 +70,9 @@
     </div>
 
     <div class="field">
-      <label for="songUrl">Background song <span class="opt">(optional)</span></label>
-      <input type="text" id="songUrl" autocomplete="off" placeholder="Paste a YouTube link">
-      <p class="muted small file-hint" id="songHint">Paste any YouTube song link — it starts playing the moment the letter is revealed. Nothing is uploaded; only the song reference travels in the link.</p>
+      <label for="songFile">Background song <span class="opt">(optional)</span></label>
+      <input type="file" id="songFile" class="file-input" accept="audio/*">
+      <p class="muted small file-hint" id="songHint">Add a short audio file — it starts playing the moment the letter is revealed. The audio travels inside the gift itself (max 6MB), so a short clip works best.</p>
     </div>
 
     <div class="field">
@@ -171,7 +171,7 @@
 
   <div class="song-dock hidden" id="songDock">
     <div class="turntable">
-      <div class="song-frame"><div id="ytPlayer"></div></div>
+      <audio id="songAudio" loop playsinline></audio>
       <div class="vinyl"><span class="vinyl-shine"></span><span class="vinyl-label"></span><span class="vinyl-hole"></span></div>
       <button type="button" class="vinyl-btn" id="vinylBtn" aria-label="Play or pause the song">
         <svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>

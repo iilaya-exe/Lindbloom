@@ -750,88 +750,46 @@
       saveBtn.addEventListener('click', () => saveCardImage(data, theme));
     }
 
-    // background song via YouTube — only an 11-char video id is stored,
-    // so the song adds almost nothing to the gift link. The audio comes
-    // from a real YouTube player (built with the IFrame API so we can
-    // drive play/pause), but it's hidden behind a spinning vinyl record
-    // that acts as the play button. On reveal we try to autoplay; where
-    // the browser blocks unmuted autoplay (common on phones), one tap on
-    // the record starts it.
-    const songId = (data.song && /^[\w-]{11}$/.test(data.song)) ? data.song : '';
-    let ytPlayer = null, ytReady = false, wantPlay = false;
-    // Build the player DURING the flower intro (dock present but invisible
-    // via .arming) so it's fully ready by the time the letter is revealed.
-    // iOS Safari won't start a YouTube embed from a delayed callback, so
-    // the actual play() is fired from the reveal tap / a tap on the record
-    // — a real user gesture on a ready player, which iOS accepts.
-    function initSong() {
-      if (!songId) return;
+    // background song — an uploaded audio file, embedded as a data URL
+    // right in the gift, so it plays with no internet connection needed
+    // (even from a downloaded file opened offline). It's hidden behind a
+    // spinning vinyl record that acts as the play button. On reveal we
+    // try to autoplay; where the browser blocks unmuted autoplay (common
+    // on phones), one tap on the record starts it.
+    const songSrc = (data.song && /^data:audio\//.test(data.song)) ? data.song : '';
+    const songAudio = $('songAudio');
+    if (songAudio && songSrc && songAudio.getAttribute('src') !== songSrc) {
+      songAudio.src = songSrc;
+    }
+    function setDockPlaying(playing) {
       const dock = $('songDock');
-      if (dock && dock.classList.contains('hidden')) {
-        dock.classList.remove('hidden');
-        dock.classList.add('arming');
+      if (!dock) return;
+      dock.classList.toggle('playing', playing);
+      const now = dock.querySelector('.song-now');
+      if (now) {
+        now.innerHTML = playing
+          ? '<span class="song-note">♪</span> now playing'
+          : '<span class="song-note">▸</span> tap to play';
       }
-      if (window.YT && window.YT.Player) { buildPlayer(); return; }
-      if (!document.getElementById('yt-api')) {
-        const s = document.createElement('script');
-        s.id = 'yt-api';
-        s.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(s);
-      }
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { if (typeof prev === 'function') prev(); buildPlayer(); };
     }
-    function buildPlayer() {
-      if (ytPlayer || !songId || !window.YT || !window.YT.Player) return;
-      ytPlayer = new YT.Player('ytPlayer', {
-        videoId: songId,
-        playerVars: { playsinline: 1, rel: 0, modestbranding: 1, controls: 0, loop: 1, playlist: songId },
-        events: {
-          onReady: () => { ytReady = true; if (wantPlay) doPlay(); },
-          onStateChange: (e) => {
-            const dock = $('songDock');
-            if (!dock) return;
-            const playing = e.data === 1;
-            dock.classList.toggle('playing', playing);
-            const now = dock.querySelector('.song-now');
-            if (now) {
-              now.innerHTML = playing
-                ? '<span class="song-note">♪</span> now playing'
-                : '<span class="song-note">▸</span> tap to play';
-            }
-          }
-        }
-      });
+    if (songAudio && !songAudio.dataset.wired) {
+      songAudio.dataset.wired = '1';
+      songAudio.addEventListener('play', () => setDockPlaying(true));
+      songAudio.addEventListener('pause', () => setDockPlaying(false));
     }
-    function doPlay() {
-      if (!ytPlayer) return;
-      try { ytPlayer.unMute(); ytPlayer.setVolume(100); ytPlayer.playVideo(); } catch (_) {}
-    }
-    // called from the reveal tap (a user gesture)
+    // called from the reveal tap (a real user gesture, so autoplay with
+    // sound is allowed)
     function startSong() {
-      if (!songId) return;
+      if (!songSrc || !songAudio) return;
       const dock = $('songDock');
-      if (dock) {
-        dock.classList.remove('hidden', 'arming');
-        const now = dock.querySelector('.song-now');
-        if (now) now.innerHTML = '<span class="song-note">▸</span> tap to play';
-      }
-      wantPlay = true;
-      if (ytReady) doPlay();  // ready player + this gesture = plays with sound
-      else initSong();        // still loading; will play on ready (desktop) or on a tap
+      if (dock) dock.classList.remove('hidden');
+      songAudio.currentTime = 0;
+      songAudio.play().catch(() => setDockPlaying(false));
     }
     function stopSong() {
-      if (ytPlayer && ytPlayer.destroy) { try { ytPlayer.destroy(); } catch (_) {} }
-      ytPlayer = null;
-      ytReady = false;
-      wantPlay = false;
+      if (songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
       const dock = $('songDock');
-      if (dock) {
-        dock.classList.add('hidden');
-        dock.classList.remove('playing', 'arming');
-        const frame = dock.querySelector('.song-frame');
-        if (frame) frame.innerHTML = '<div id="ytPlayer"></div>';
-      }
+      if (dock) { dock.classList.add('hidden'); dock.classList.remove('playing'); }
     }
     // tapping the record plays it (a guaranteed user gesture) or toggles
     // play/pause once it's going
@@ -839,10 +797,9 @@
     if (vinylBtn && !vinylBtn.dataset.wired) {
       vinylBtn.dataset.wired = '1';
       vinylBtn.addEventListener('click', () => {
-        wantPlay = true;
-        if (!ytPlayer || !ytPlayer.getPlayerState) { initSong(); return; }
-        if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo();
-        else doPlay();
+        if (!songAudio) return;
+        if (songAudio.paused) songAudio.play().catch(() => {});
+        else songAudio.pause();
       });
     }
 
@@ -1029,9 +986,6 @@
     envelope.addEventListener('click', () => {
       if (envelope.classList.contains('open-flap')) return;
       envelope.classList.add('open-flap');
-      // start loading the song player now so it's ready to play by the
-      // time the flowers clear and the letter is revealed
-      initSong();
       // the pulse keyframe animation would override an inline opacity
       openHint.style.animation = 'none';
       openHint.style.opacity = '0';
@@ -1287,7 +1241,6 @@ textarea { resize: vertical; line-height: 1.5; }
 .file-input::file-selector-button:hover { background: #f3d7e0; }
 .file-hint { text-align: left; margin-top: 8px; }
 .field-error { color: #b3423c; }
-#songUrl { width: 100%; }
 
 /* card-theme picker */
 .theme-row { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -1871,8 +1824,8 @@ body.card-mode.theme-night .card-board::before {
 }
 
 /* background-song player styled as a little spinning record ----------
-   The real YouTube player sits underneath, clipped to a circle, and the
-   vinyl art is layered on top so all you see is the record. Tapping it
+   The uploaded audio plays from a hidden <audio> element, with the
+   vinyl art layered on top acting as the play button. Tapping it
    plays/pauses; it spins only while the song is playing. */
 .song-dock {
   position: fixed;
@@ -1899,23 +1852,7 @@ body.card-mode.theme-night .card-board::before {
   height: 116px;
   flex: 0 0 auto;
 }
-/* the YouTube player: full-size but clipped to the record's circle and
-   hidden beneath the vinyl (kept on-screen so audio plays reliably) */
-.song-frame {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #111;
-}
-.song-frame iframe,
-.song-frame #ytPlayer {
-  position: absolute;
-  inset: -30%;
-  width: 160%;
-  height: 160%;
-  border: 0;
-}
+#songAudio { display: none; }
 .vinyl {
   position: absolute;
   inset: 0;
@@ -1968,9 +1905,6 @@ body.card-mode.theme-night .card-board::before {
 /* the control fades back while playing, and is clear when idle/paused */
 .song-dock.playing .vinyl-btn svg { opacity: 0; }
 .turntable:hover .vinyl-btn svg { opacity: 0.95; }
-/* built but not yet revealed: present (so the iframe initialises) but
-   invisible and non-interactive */
-.song-dock.arming { opacity: 0; pointer-events: none; }
 .song-now {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -1986,7 +1920,7 @@ body.card-mode.theme-night .card-board::before {
 @keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
 /* until it's actually playing, pulse the record and brighten the label
    so it clearly invites a tap to play */
-.song-dock:not(.playing):not(.arming) .turntable {
+.song-dock:not(.playing) .turntable {
   border-radius: 50%;
   animation: tapForSound 1.6s ease-in-out infinite;
 }
@@ -2169,7 +2103,7 @@ ${FLOWER_SPRITE}
   <div class="lightbox hidden" id="lightbox"><img id="lightboxImg" alt=""></div>
   <div class="song-dock hidden" id="songDock">
     <div class="turntable">
-      <div class="song-frame"><div id="ytPlayer"></div></div>
+      <audio id="songAudio" loop playsinline></audio>
       <div class="vinyl"><span class="vinyl-shine"></span><span class="vinyl-label"></span><span class="vinyl-hole"></span></div>
       <button type="button" class="vinyl-btn" id="vinylBtn" aria-label="Play or pause the song">
         <svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>
@@ -2218,13 +2152,16 @@ ${FLOWER_SPRITE}
     });
   }
 
-  /* Pull the 11-char video id out of any YouTube link (or a bare id). */
-  function parseYouTubeId(input) {
-    if (!input) return '';
-    const s = input.trim();
-    if (/^[\w-]{11}$/.test(s)) return s;
-    const m = s.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|music\.youtube\.com\/watch\?(?:.*&)?v=)([\w-]{11})/);
-    return m ? m[1] : '';
+  /* Read a file (used for the background song) and return it as a data
+     URL, unmodified — audio can't be re-encoded in the browser the way
+     photos are resized, so the cap is enforced by file size instead. */
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 
   function initCompose() {
@@ -2272,19 +2209,24 @@ ${FLOWER_SPRITE}
       const revealText = $('revealText').value.trim();
       if (openText) data.openText = openText;
       if (revealText) data.revealText = revealText;
-      const songRaw = $('songUrl').value.trim();
-      const songId = parseYouTubeId(songRaw);
+      const songFile = $('songFile').files[0] || null;
       const songHint = $('songHint');
+      const MAX_SONG_BYTES = 6 * 1024 * 1024;
       if (!songHint.dataset.orig) songHint.dataset.orig = songHint.textContent;
-      if (songRaw && !songId) {
+      if (songFile && !songFile.type.startsWith('audio/')) {
         songHint.classList.add('field-error');
-        songHint.textContent = "That doesn't look like a YouTube link — paste one like https://youtu.be/… or leave it blank.";
-        $('songUrl').focus();
+        songHint.textContent = "That doesn't look like an audio file — pick an mp3, m4a, or similar.";
+        $('songFile').focus();
+        return;
+      }
+      if (songFile && songFile.size > MAX_SONG_BYTES) {
+        songHint.classList.add('field-error');
+        songHint.textContent = 'That file is too big (max 6MB) — trim it or export at a lower bitrate.';
+        $('songFile').focus();
         return;
       }
       songHint.classList.remove('field-error');
       songHint.textContent = songHint.dataset.orig;
-      if (songId) data.song = songId;
       if (!data.to || !data.from || !data.message) return;
 
       const passphrase = usePassphrase.checked ? passphraseInput.value : '';
@@ -2308,6 +2250,11 @@ ${FLOWER_SPRITE}
           catch (err) { /* skip an unreadable image */ }
         }
         if (photos.length) data.photos = photos;
+
+        if (songFile) {
+          try { data.song = await fileToDataURL(songFile); }
+          catch (err) { /* skip an unreadable file */ }
+        }
 
         const wrapper = await buildWrapper(data, passphrase);
         lastWrapper = wrapper;
