@@ -70,12 +70,6 @@
     </div>
 
     <div class="field">
-      <label for="songFile">Background song <span class="opt">(optional)</span></label>
-      <input type="file" id="songFile" class="file-input" accept="audio/*">
-      <p class="muted small file-hint" id="songHint">Add a short audio file — it starts playing the moment the letter is revealed. The audio travels inside the gift itself (max 6MB), so a short clip works best.</p>
-    </div>
-
-    <div class="field">
       <label>Reveal wording <span class="opt">(optional)</span></label>
       <div class="field-row">
         <input type="text" id="openText" maxlength="40" autocomplete="off" placeholder="Tap to open">
@@ -168,18 +162,6 @@
   </div>
 
   <div class="lightbox hidden" id="lightbox"><img id="lightboxImg" alt=""></div>
-
-  <div class="song-dock hidden" id="songDock">
-    <div class="turntable">
-      <audio id="songAudio" loop playsinline></audio>
-      <div class="vinyl"><span class="vinyl-shine"></span><span class="vinyl-label"></span><span class="vinyl-hole"></span></div>
-      <button type="button" class="vinyl-btn" id="vinylBtn" aria-label="Play or pause the song">
-        <svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>
-        <svg class="ic-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="7.5" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/><rect x="13.3" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/></svg>
-      </button>
-    </div>
-    <p class="song-now"><span class="song-note">♪</span> now playing</p>
-  </div>
 
   <p class="gift-footer"><span class="icon"><svg viewBox="0 0 100 100"><use href="#fl-rose"/></svg></span>sent with love</p>
 </main>

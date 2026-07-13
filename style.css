@@ -57,7 +57,7 @@ textarea:focus-visible,
 /* calm ambience for reduced-motion users; core reveals stay handled in JS */
 @media (prefers-reduced-motion: reduce) {
   .bg-decor { display: none; }
-  .open-hint, .song-note, .reveal-hint { animation: none; opacity: 1; }
+  .open-hint, .reveal-hint { animation: none; opacity: 1; }
 }
 
 /* ---------- floating background petals (compose page ambience) ---------- */
@@ -791,123 +791,6 @@ body.card-mode.theme-night .card-board::before {
   border-bottom-width: 30px;
   border-radius: 3px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-}
-
-/* background-song player styled as a little spinning record ----------
-   The uploaded audio plays from a hidden <audio> element, with the
-   vinyl art layered on top acting as the play button. Tapping it
-   plays/pauses; it spins only while the song is playing. */
-.song-dock {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 72;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 12px 14px 11px;
-  background: rgba(20, 24, 14, 0.8);
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(10, 14, 8, 0.55);
-  animation: dockIn 0.6s ease 0.3s both;
-}
-@keyframes dockIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.92); }
-  to   { opacity: 1; transform: none; }
-}
-.turntable {
-  position: relative;
-  width: 116px;
-  height: 116px;
-  flex: 0 0 auto;
-}
-#songAudio { display: none; }
-.vinyl {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    repeating-radial-gradient(circle at 50% 50%, #191919 0 1.5px, #232323 1.5px 3px);
-  box-shadow: inset 0 0 0 2px #050505, inset 0 0 14px rgba(0, 0, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.5);
-  animation: vinylSpin 3.6s linear infinite;
-  animation-play-state: paused;
-}
-.song-dock.playing .vinyl { animation-play-state: running; }
-@keyframes vinylSpin { to { transform: rotate(360deg); } }
-.vinyl-shine {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(125deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 66%, rgba(255,255,255,0.09) 100%);
-}
-.vinyl-label {
-  position: absolute;
-  inset: 33%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 42% 38%, var(--note-accent, #d98ba2), #9c5772);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-}
-.vinyl-hole {
-  position: absolute;
-  inset: 46.5%;
-  border-radius: 50%;
-  background: #0c0c0c;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
-.vinyl-btn {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: transparent;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-.vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
-.vinyl-btn .ic-pause { display: none; }
-.vinyl-btn .ic-play { opacity: 0.95; }
-.song-dock.playing .vinyl-btn .ic-play { display: none; }
-.song-dock.playing .vinyl-btn .ic-pause { display: block; }
-/* the control fades back while playing, and is clear when idle/paused */
-.song-dock.playing .vinyl-btn svg { opacity: 0; }
-.turntable:hover .vinyl-btn svg { opacity: 0.95; }
-.song-now {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #f4ead6;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
-@keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-/* until it's actually playing, pulse the record and brighten the label
-   so it clearly invites a tap to play */
-.song-dock:not(.playing) .turntable {
-  border-radius: 50%;
-  animation: tapForSound 1.6s ease-in-out infinite;
-}
-.song-dock:not(.playing) .song-now { color: #ffe0a3; }
-@keyframes tapForSound {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 163, 0); }
-  50% { box-shadow: 0 0 0 6px rgba(255, 224, 163, 0.4); }
-}
-@media (max-width: 420px) {
-  .song-dock { right: 12px; bottom: 12px; }
-  .turntable { width: 96px; height: 96px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .song-dock:not(.playing) .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .vinyl { animation: none; }
 }
 
 /* card action buttons (save image / replay) */

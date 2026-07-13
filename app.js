@@ -750,59 +750,6 @@
       saveBtn.addEventListener('click', () => saveCardImage(data, theme));
     }
 
-    // background song — an uploaded audio file, embedded as a data URL
-    // right in the gift, so it plays with no internet connection needed
-    // (even from a downloaded file opened offline). It's hidden behind a
-    // spinning vinyl record that acts as the play button. On reveal we
-    // try to autoplay; where the browser blocks unmuted autoplay (common
-    // on phones), one tap on the record starts it.
-    const songSrc = (data.song && /^data:audio\//.test(data.song)) ? data.song : '';
-    const songAudio = $('songAudio');
-    if (songAudio && songSrc && songAudio.getAttribute('src') !== songSrc) {
-      songAudio.src = songSrc;
-    }
-    function setDockPlaying(playing) {
-      const dock = $('songDock');
-      if (!dock) return;
-      dock.classList.toggle('playing', playing);
-      const now = dock.querySelector('.song-now');
-      if (now) {
-        now.innerHTML = playing
-          ? '<span class="song-note">♪</span> now playing'
-          : '<span class="song-note">▸</span> tap to play';
-      }
-    }
-    if (songAudio && !songAudio.dataset.wired) {
-      songAudio.dataset.wired = '1';
-      songAudio.addEventListener('play', () => setDockPlaying(true));
-      songAudio.addEventListener('pause', () => setDockPlaying(false));
-    }
-    // called from the reveal tap (a real user gesture, so autoplay with
-    // sound is allowed)
-    function startSong() {
-      if (!songSrc || !songAudio) return;
-      const dock = $('songDock');
-      if (dock) dock.classList.remove('hidden');
-      songAudio.currentTime = 0;
-      songAudio.play().catch(() => setDockPlaying(false));
-    }
-    function stopSong() {
-      if (songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
-      const dock = $('songDock');
-      if (dock) { dock.classList.add('hidden'); dock.classList.remove('playing'); }
-    }
-    // tapping the record plays it (a guaranteed user gesture) or toggles
-    // play/pause once it's going
-    const vinylBtn = $('vinylBtn');
-    if (vinylBtn && !vinylBtn.dataset.wired) {
-      vinylBtn.dataset.wired = '1';
-      vinylBtn.addEventListener('click', () => {
-        if (!songAudio) return;
-        if (songAudio.paused) songAudio.play().catch(() => {});
-        else songAudio.pause();
-      });
-    }
-
     const stage = $('giftStage');
     stage.classList.remove('hidden');
 
@@ -881,8 +828,6 @@
         cv.classList.add('hidden');
         cv.classList.remove('revealed');
         document.body.classList.remove('card-mode');
-        // stop and rearm the song so it plays again on the next reveal
-        stopSong();
         // bring the sealed envelope back and reset its open state
         envelope.classList.remove('open-flap');
         openHint.style.animation = '';
@@ -968,10 +913,8 @@
       overlay.addEventListener('click', () => {
         if (overlay.classList.contains('falling')) return;
         overlay.classList.add('falling');
-        // start the song on this tap (a user gesture, so sound is
-        // allowed); the card then cross-fades up behind the falling
-        // flowers so the letter emerges rather than cutting in
-        startSong();
+        // the card then cross-fades up behind the falling flowers so
+        // the letter emerges rather than cutting in
         setTimeout(openCard, 900);
         setTimeout(() => { overlay.remove(); }, 3600);
       });
@@ -991,7 +934,6 @@
       openHint.style.opacity = '0';
       openHint.style.transition = 'opacity 0.4s';
       if (reduceMotion) {
-        startSong();
         setTimeout(openCard, 350);
         return;
       }
@@ -1087,7 +1029,7 @@ textarea:focus-visible,
 /* calm ambience for reduced-motion users; core reveals stay handled in JS */
 @media (prefers-reduced-motion: reduce) {
   .bg-decor { display: none; }
-  .open-hint, .song-note, .reveal-hint { animation: none; opacity: 1; }
+  .open-hint, .reveal-hint { animation: none; opacity: 1; }
 }
 
 /* ---------- floating background petals (compose page ambience) ---------- */
@@ -1823,123 +1765,6 @@ body.card-mode.theme-night .card-board::before {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* background-song player styled as a little spinning record ----------
-   The uploaded audio plays from a hidden <audio> element, with the
-   vinyl art layered on top acting as the play button. Tapping it
-   plays/pauses; it spins only while the song is playing. */
-.song-dock {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 72;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 12px 14px 11px;
-  background: rgba(20, 24, 14, 0.8);
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(10, 14, 8, 0.55);
-  animation: dockIn 0.6s ease 0.3s both;
-}
-@keyframes dockIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.92); }
-  to   { opacity: 1; transform: none; }
-}
-.turntable {
-  position: relative;
-  width: 116px;
-  height: 116px;
-  flex: 0 0 auto;
-}
-#songAudio { display: none; }
-.vinyl {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    repeating-radial-gradient(circle at 50% 50%, #191919 0 1.5px, #232323 1.5px 3px);
-  box-shadow: inset 0 0 0 2px #050505, inset 0 0 14px rgba(0, 0, 0, 0.9), 0 3px 8px rgba(0, 0, 0, 0.5);
-  animation: vinylSpin 3.6s linear infinite;
-  animation-play-state: paused;
-}
-.song-dock.playing .vinyl { animation-play-state: running; }
-@keyframes vinylSpin { to { transform: rotate(360deg); } }
-.vinyl-shine {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(125deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 66%, rgba(255,255,255,0.09) 100%);
-}
-.vinyl-label {
-  position: absolute;
-  inset: 33%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 42% 38%, var(--note-accent, #d98ba2), #9c5772);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-}
-.vinyl-hole {
-  position: absolute;
-  inset: 46.5%;
-  border-radius: 50%;
-  background: #0c0c0c;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
-.vinyl-btn {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: transparent;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-}
-.vinyl-btn svg { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); transition: opacity 0.2s ease; }
-.vinyl-btn .ic-pause { display: none; }
-.vinyl-btn .ic-play { opacity: 0.95; }
-.song-dock.playing .vinyl-btn .ic-play { display: none; }
-.song-dock.playing .vinyl-btn .ic-pause { display: block; }
-/* the control fades back while playing, and is clear when idle/paused */
-.song-dock.playing .vinyl-btn svg { opacity: 0; }
-.turntable:hover .vinyl-btn svg { opacity: 0.95; }
-.song-now {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #f4ead6;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.song-note { font-size: 0.95rem; animation: notePulse 1.6s ease-in-out infinite; }
-@keyframes notePulse { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
-/* until it's actually playing, pulse the record and brighten the label
-   so it clearly invites a tap to play */
-.song-dock:not(.playing) .turntable {
-  border-radius: 50%;
-  animation: tapForSound 1.6s ease-in-out infinite;
-}
-.song-dock:not(.playing) .song-now { color: #ffe0a3; }
-@keyframes tapForSound {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 163, 0); }
-  50% { box-shadow: 0 0 0 6px rgba(255, 224, 163, 0.4); }
-}
-@media (max-width: 420px) {
-  .song-dock { right: 12px; bottom: 12px; }
-  .turntable { width: 96px; height: 96px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .song-dock:not(.playing) .turntable { animation: none; box-shadow: 0 0 0 3px rgba(255, 224, 163, 0.4); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .vinyl { animation: none; }
-}
-
 /* card action buttons (save image / replay) */
 .card-actions {
   display: flex;
@@ -2101,17 +1926,6 @@ ${FLOWER_SPRITE}
     </div>
   </div>
   <div class="lightbox hidden" id="lightbox"><img id="lightboxImg" alt=""></div>
-  <div class="song-dock hidden" id="songDock">
-    <div class="turntable">
-      <audio id="songAudio" loop playsinline></audio>
-      <div class="vinyl"><span class="vinyl-shine"></span><span class="vinyl-label"></span><span class="vinyl-hole"></span></div>
-      <button type="button" class="vinyl-btn" id="vinylBtn" aria-label="Play or pause the song">
-        <svg class="ic-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>
-        <svg class="ic-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="7.5" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/><rect x="13.3" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/></svg>
-      </button>
-    </div>
-    <p class="song-now"><span class="song-note">♪</span> now playing</p>
-  </div>
   <p class="gift-footer"><span class="icon">${petal('rose')}</span>sent with love</p>
 </main>
 <script>${script}</script>
@@ -2149,18 +1963,6 @@ ${FLOWER_SPRITE}
       };
       img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
       img.src = url;
-    });
-  }
-
-  /* Read a file (used for the background song) and return it as a data
-     URL, unmodified — audio can't be re-encoded in the browser the way
-     photos are resized, so the cap is enforced by file size instead. */
-  function fileToDataURL(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(file);
     });
   }
 
@@ -2209,24 +2011,6 @@ ${FLOWER_SPRITE}
       const revealText = $('revealText').value.trim();
       if (openText) data.openText = openText;
       if (revealText) data.revealText = revealText;
-      const songFile = $('songFile').files[0] || null;
-      const songHint = $('songHint');
-      const MAX_SONG_BYTES = 6 * 1024 * 1024;
-      if (!songHint.dataset.orig) songHint.dataset.orig = songHint.textContent;
-      if (songFile && !songFile.type.startsWith('audio/')) {
-        songHint.classList.add('field-error');
-        songHint.textContent = "That doesn't look like an audio file — pick an mp3, m4a, or similar.";
-        $('songFile').focus();
-        return;
-      }
-      if (songFile && songFile.size > MAX_SONG_BYTES) {
-        songHint.classList.add('field-error');
-        songHint.textContent = 'That file is too big (max 6MB) — trim it or export at a lower bitrate.';
-        $('songFile').focus();
-        return;
-      }
-      songHint.classList.remove('field-error');
-      songHint.textContent = songHint.dataset.orig;
       if (!data.to || !data.from || !data.message) return;
 
       const passphrase = usePassphrase.checked ? passphraseInput.value : '';
@@ -2250,11 +2034,6 @@ ${FLOWER_SPRITE}
           catch (err) { /* skip an unreadable image */ }
         }
         if (photos.length) data.photos = photos;
-
-        if (songFile) {
-          try { data.song = await fileToDataURL(songFile); }
-          catch (err) { /* skip an unreadable file */ }
-        }
 
         const wrapper = await buildWrapper(data, passphrase);
         lastWrapper = wrapper;

@@ -97,7 +97,6 @@ You'll find a few things I spent far too much time obsessing over:
 * Four themes so I could choose whichever one reminded me most of you.
 * Photos that look like little Polaroids scattered across a scrapbook.
 * A typewriter animation because reading something slowly somehow feels more personal.
-* Music if I decide the moment needs it.
 * A way to save everything as an image so you'll always have it.
 
 None of those things were *necessary*.
