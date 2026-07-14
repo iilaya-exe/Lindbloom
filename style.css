@@ -46,18 +46,16 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-.envelope:focus-visible,
-.flower-burst:focus-visible {
+.envelope:focus-visible {
   outline: 2px solid var(--rose-dark);
   outline-offset: 3px;
   border-radius: 4px;
 }
-.flower-burst:focus-visible { outline-offset: -4px; }
 
 /* calm ambience for reduced-motion users; core reveals stay handled in JS */
 @media (prefers-reduced-motion: reduce) {
   .bg-decor { display: none; }
-  .open-hint, .reveal-hint { animation: none; opacity: 1; }
+  .open-hint { animation: none; opacity: 1; }
 }
 
 /* ---------- floating background petals (compose page ambience) ---------- */
@@ -525,24 +523,6 @@ textarea { resize: vertical; line-height: 1.5; }
   from { opacity: 1; transform: translate(var(--x1), var(--y1)) rotate(var(--r1)) scale(1); }
   to   { opacity: 1; transform: translate(var(--x1), calc(var(--y1) + 5px)) rotate(calc(var(--r1) + 2.2deg)) scale(1.02); }
 }
-.reveal-hint {
-  position: fixed;
-  bottom: 30px;
-  left: 0; right: 0;
-  text-align: center;
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  color: #fffdf4;
-  font-size: 1.2rem;
-  letter-spacing: 0.04em;
-  text-shadow: 0 1px 12px rgba(70, 45, 25, 0.55);
-  z-index: 61;
-  opacity: 0;
-  animation: hintIn 0.9s ease var(--hd, 2.6s) forwards, pulse 2.6s ease-in-out calc(var(--hd, 2.6s) + 0.9s) infinite;
-  pointer-events: none;
-}
-@keyframes hintIn { to { opacity: 1; } }
-.flower-burst.falling .reveal-hint { display: none; }
 .flower-burst.falling .burst-flower {
   animation: flowerFall 2.3s var(--fd, 0s) both;
 }

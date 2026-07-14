@@ -916,28 +916,22 @@
           + '--r2:' + R(-160, 160) + 'deg;--fd:' + R(0, 0.5) + 's;';
         overlay.appendChild(el);
       }
-      // Once the wall has fully bloomed, invite a tap; the flowers
-      // hold (breathing gently) until the viewer reveals the card.
-      const hint = document.createElement('p');
-      hint.className = 'reveal-hint';
-      hint.textContent = data.revealText || 'Tap to reveal';
-      hint.style.setProperty('--hd', (maxEnd + 0.4) + 's');
-      overlay.appendChild(hint);
       document.body.appendChild(overlay);
-      // keyboard users can reveal with Enter/Space too
-      overlay.tabIndex = 0;
-      overlay.focus({ preventScroll: true });
-      overlay.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); overlay.click(); }
-      });
-      overlay.addEventListener('click', () => {
-        if (overlay.classList.contains('falling')) return;
+      // Once the wall has fully bloomed it holds for a breath, then the
+      // flowers fall away on their own — the viewer never has to tap.
+      // (A tap still skips the hold for the impatient.)
+      function fall() {
+        // the overlay may already be gone (e.g. "Replay intro" reset the
+        // stage) — a stale timer must not re-open the card
+        if (!overlay.isConnected || overlay.classList.contains('falling')) return;
         overlay.classList.add('falling');
         // the card cross-fades up while the flowers are still dense, so
         // the letter emerges from behind them with no bare-stage flash
         setTimeout(openCard, 750);
         setTimeout(() => { overlay.remove(); }, 3600);
-      });
+      }
+      overlay.addEventListener('click', fall);
+      setTimeout(fall, (maxEnd + 1.4) * 1000);
     }
 
     if (!envelope.dataset.keys) {
@@ -1081,18 +1075,16 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
-.envelope:focus-visible,
-.flower-burst:focus-visible {
+.envelope:focus-visible {
   outline: 2px solid var(--rose-dark);
   outline-offset: 3px;
   border-radius: 4px;
 }
-.flower-burst:focus-visible { outline-offset: -4px; }
 
 /* calm ambience for reduced-motion users; core reveals stay handled in JS */
 @media (prefers-reduced-motion: reduce) {
   .bg-decor { display: none; }
-  .open-hint, .reveal-hint { animation: none; opacity: 1; }
+  .open-hint { animation: none; opacity: 1; }
 }
 
 /* ---------- floating background petals (compose page ambience) ---------- */
@@ -1490,24 +1482,6 @@ textarea { resize: vertical; line-height: 1.5; }
   from { opacity: 1; transform: translate(var(--x1), var(--y1)) rotate(var(--r1)) scale(1); }
   to   { opacity: 1; transform: translate(var(--x1), calc(var(--y1) + 5px)) rotate(calc(var(--r1) + 2.2deg)) scale(1.02); }
 }
-.reveal-hint {
-  position: fixed;
-  bottom: 30px;
-  left: 0; right: 0;
-  text-align: center;
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  color: #fffdf4;
-  font-size: 1.2rem;
-  letter-spacing: 0.04em;
-  text-shadow: 0 1px 12px rgba(70, 45, 25, 0.55);
-  z-index: 61;
-  opacity: 0;
-  animation: hintIn 0.9s ease var(--hd, 2.6s) forwards, pulse 2.6s ease-in-out calc(var(--hd, 2.6s) + 0.9s) infinite;
-  pointer-events: none;
-}
-@keyframes hintIn { to { opacity: 1; } }
-.flower-burst.falling .reveal-hint { display: none; }
 .flower-burst.falling .burst-flower {
   animation: flowerFall 2.3s var(--fd, 0s) both;
 }
