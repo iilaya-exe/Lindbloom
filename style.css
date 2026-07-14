@@ -280,6 +280,23 @@ textarea { resize: vertical; line-height: 1.5; }
 .file-hint { text-align: left; margin-top: 8px; }
 .field-error { color: #b3423c; }
 
+/* per-photo caption boxes shown once photos are picked */
+.caption-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.caption-row img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(150, 112, 60, 0.25);
+  flex: 0 0 auto;
+}
+.caption-row .caption-input { flex: 1; }
+
 /* card-theme picker */
 .theme-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .theme-swatch {
@@ -476,6 +493,36 @@ textarea { resize: vertical; line-height: 1.5; }
 .envelope.open-flap .envelope-seal {
   opacity: 0;
   transform: translateX(-50%) translateY(-16px) scale(0.6) rotate(20deg);
+}
+/* the recipient's initial pressed into the wax */
+.seal-initial {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #f0e7fa;
+  text-shadow: 0 1px 2px rgba(60, 40, 90, 0.55);
+  pointer-events: none;
+}
+/* the envelope is addressed to the recipient in a handwritten hand */
+.env-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+  margin: 0;
+  text-align: center;
+  font-family: 'Caveat', 'Playfair Display', cursive;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #7c5638;
+  transform: rotate(-2deg);
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* ---------- full-screen flower wall ----------
@@ -780,6 +827,86 @@ body.card-mode.theme-night .card-board::before {
   text-align: right;
 }
 
+/* the sender's voice note, taped onto the collage like a keepsake */
+.voice-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(360px, 92%);
+  margin-top: 40px;
+  padding: 15px 18px 13px;
+  background: var(--note-paper);
+  color: var(--note-ink);
+  border-radius: 14px;
+  box-shadow: 0 12px 26px rgba(50, 44, 24, 0.32);
+  z-index: 2;
+  animation: voiceIn 0.9s cubic-bezier(0.25, 0.9, 0.35, 1) 1.05s both;
+}
+@keyframes voiceIn {
+  from { opacity: 0; transform: translateY(22px) rotate(2.8deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(1.2deg); }
+}
+.voice-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 92px;
+  height: 26px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: var(--tape);
+  box-shadow: 0 2px 6px rgba(20, 26, 16, 0.2);
+}
+.voice-btn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--note-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(50, 44, 24, 0.3);
+  transition: transform 0.2s ease;
+}
+.voice-btn:hover { transform: scale(1.06); }
+.voice-btn .ic-pause { display: none; }
+.voice-wrap.playing .voice-btn .ic-play { display: none; }
+.voice-wrap.playing .voice-btn .ic-pause { display: block; }
+.voice-meta { flex: 1; min-width: 0; }
+.voice-label {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-bottom: 7px;
+}
+.voice-track {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.voice-progress {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--note-accent);
+  transition: width 0.2s linear;
+}
+.voice-time {
+  flex: 0 0 auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+#voiceAudio { display: none; }
+
 /* the recipient's name spelt on scattered instant-photo frames */
 .tile-row {
   display: flex;
@@ -830,7 +957,7 @@ body.card-mode.theme-night .card-board::before {
   width: 216px;
   max-width: 44vw;
   background: #fdf9ee;
-  padding: 11px 11px 34px;
+  padding: 11px 11px 12px;
   border-radius: 3px;
   box-shadow: 0 14px 30px rgba(18, 24, 14, 0.5);
   transform: rotate(var(--pr, 0deg));
@@ -848,6 +975,18 @@ body.card-mode.theme-night .card-board::before {
   height: auto;
   border-radius: 1px;
   background: #d8d2c2;
+}
+/* the sender's handwritten line on the white strip; kept at a fixed
+   minimum height so caption-less polaroids look classic */
+.polaroid-cap {
+  font-family: 'Caveat', 'Playfair Display', cursive;
+  font-size: 1.08rem;
+  line-height: 1.25;
+  text-align: center;
+  color: #6b6250;
+  margin: 7px 2px 0;
+  min-height: 20px;
+  overflow-wrap: break-word;
 }
 @keyframes photoIn {
   from { opacity: 0; transform: rotate(var(--pr, 0deg)) translateY(26px) scale(0.9); }

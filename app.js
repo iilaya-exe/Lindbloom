@@ -504,15 +504,17 @@
     };
     const P = PAINT[theme] || PAINT.garden;
     const photos = (data.photos || []).slice(0, 4);
-    const loads = photos.map((src) => new Promise((res) => {
+    const allCaps = data.captions || [];
+    const loads = photos.map((src, idx) => new Promise((res) => {
       const im = new Image();
-      im.onload = () => res(im);
+      im.onload = () => res({ im, cap: allCaps[idx] || '' });
       im.onerror = () => res(null);
       im.src = src;
     }));
 
-    Promise.all(loads).then((imgsRaw) => {
-      const imgs = imgsRaw.filter(Boolean);
+    Promise.all(loads).then((shotsRaw) => {
+      const shots = shotsRaw.filter(Boolean);
+      const imgs = shots.map((s) => s.im);
       const S = 2;                 // supersample for crisp output
       const W = 920;
       const pad = 60;
@@ -651,6 +653,18 @@
           if (ar > box) { sw = im.height * box; sxo = (im.width - sw) / 2; }
           else { sh = im.width / box; syo = (im.height - sh) / 2; }
           ctx.drawImage(im, sxo, syo, sw, sh, cx + 10, cy + 10, iw, ih);
+          // the sender's caption on the polaroid's white strip
+          let cap = shots[i].cap;
+          if (cap) {
+            ctx.fillStyle = 'rgba(74, 66, 52, 0.8)';
+            ctx.font = 'italic 20px "Playfair Display", Georgia, serif';
+            while (cap.length > 1 && ctx.measureText(cap).width > cellW - 26) {
+              cap = cap.slice(0, -2) + '…';
+            }
+            ctx.textAlign = 'center';
+            ctx.fillText(cap, cx + cellW / 2, cy + cellH - 14);
+            ctx.textAlign = 'left';
+          }
         });
       }
 
@@ -736,6 +750,7 @@
     if (photoStack) {
       photoStack.innerHTML = '';
       const photos = (data.photos || []).slice(0, 4);
+      const captions = data.captions || [];
       if (photos.length) {
         photoStack.classList.remove('hidden');
         photos.forEach((src, i) => {
@@ -747,6 +762,11 @@
           img.src = src;
           img.alt = '';
           fig.appendChild(img);
+          // the sender's handwritten line on the polaroid's white strip
+          const cap = document.createElement('figcaption');
+          cap.className = 'polaroid-cap';
+          cap.textContent = captions[i] || '';
+          fig.appendChild(cap);
           fig.addEventListener('click', () => {
             if (!lightbox) return;
             lightboxImg.src = src;
@@ -756,6 +776,51 @@
         });
       } else {
         photoStack.classList.add('hidden');
+      }
+    }
+
+    // the sender's voice note — a short recording embedded in the gift
+    // itself (so it plays offline too), presented as a little player
+    // taped onto the collage
+    const voiceSrc = (data.voice && /^data:audio\//.test(data.voice)) ? data.voice : '';
+    const voiceWrap = $('voiceWrap');
+    if (voiceWrap) {
+      const voiceAudio = $('voiceAudio');
+      if (voiceSrc) {
+        voiceWrap.classList.remove('hidden');
+        if (voiceAudio.getAttribute('src') !== voiceSrc) voiceAudio.src = voiceSrc;
+        const fmtTime = (s) => {
+          s = Math.max(0, Math.round(s));
+          return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+        };
+        if (!voiceWrap.dataset.wired) {
+          voiceWrap.dataset.wired = '1';
+          const progress = $('voiceProgress');
+          const timeEl = $('voiceTime');
+          $('voiceBtn').addEventListener('click', () => {
+            if (voiceAudio.paused) voiceAudio.play().catch(() => {});
+            else voiceAudio.pause();
+          });
+          voiceAudio.addEventListener('play', () => voiceWrap.classList.add('playing'));
+          voiceAudio.addEventListener('pause', () => voiceWrap.classList.remove('playing'));
+          voiceAudio.addEventListener('loadedmetadata', () => {
+            if (isFinite(voiceAudio.duration)) timeEl.textContent = fmtTime(voiceAudio.duration);
+          });
+          voiceAudio.addEventListener('timeupdate', () => {
+            if (isFinite(voiceAudio.duration) && voiceAudio.duration > 0) {
+              progress.style.width = (voiceAudio.currentTime / voiceAudio.duration * 100) + '%';
+              timeEl.textContent = fmtTime(voiceAudio.duration - voiceAudio.currentTime);
+            }
+          });
+          voiceAudio.addEventListener('ended', () => {
+            voiceWrap.classList.remove('playing');
+            voiceAudio.currentTime = 0;
+            progress.style.width = '0%';
+            if (isFinite(voiceAudio.duration)) timeEl.textContent = fmtTime(voiceAudio.duration);
+          });
+        }
+      } else {
+        voiceWrap.classList.add('hidden');
       }
     }
 
@@ -773,6 +838,16 @@
     const envelope = $('envelope');
     const openHint = $('openHint');
     openHint.textContent = data.openText || 'Tap to open';
+    // the envelope is addressed by hand and the wax seal carries the
+    // recipient's initial — the "this was made for me" moment starts
+    // before anything is opened
+    const envName = $('envName');
+    if (envName) envName.textContent = 'For ' + (data.to || 'you');
+    const sealInitial = $('sealInitial');
+    if (sealInitial) {
+      const initial = (data.to || '').trim().charAt(0);
+      sealInitial.textContent = initial ? initial.toUpperCase() : '';
+    }
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Pink lilies lead the garden mix, supported by peachy roses and
     // dahlias, with daisies/hydrangeas/sunflowers and iris/cosmos accents.
@@ -845,6 +920,9 @@
         cv.classList.add('hidden');
         cv.classList.remove('revealed');
         document.body.classList.remove('card-mode');
+        // silence the voice note so it doesn't play over the intro
+        const va = $('voiceAudio');
+        if (va) { va.pause(); va.currentTime = 0; }
         // bring the sealed envelope back and reset its open state
         envelope.classList.remove('open-flap');
         openHint.style.animation = '';
@@ -1436,6 +1514,36 @@ textarea { resize: vertical; line-height: 1.5; }
   opacity: 0;
   transform: translateX(-50%) translateY(-16px) scale(0.6) rotate(20deg);
 }
+/* the recipient's initial pressed into the wax */
+.seal-initial {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #f0e7fa;
+  text-shadow: 0 1px 2px rgba(60, 40, 90, 0.55);
+  pointer-events: none;
+}
+/* the envelope is addressed to the recipient in a handwritten hand */
+.env-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+  margin: 0;
+  text-align: center;
+  font-family: 'Caveat', 'Playfair Display', cursive;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #7c5638;
+  transform: rotate(-2deg);
+  z-index: 2;
+  pointer-events: none;
+}
 
 /* ---------- full-screen flower wall ----------
    Blooms pop into place one by one, spiralling outward from the
@@ -1739,6 +1847,86 @@ body.card-mode.theme-night .card-board::before {
   text-align: right;
 }
 
+/* the sender's voice note, taped onto the collage like a keepsake */
+.voice-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(360px, 92%);
+  margin-top: 40px;
+  padding: 15px 18px 13px;
+  background: var(--note-paper);
+  color: var(--note-ink);
+  border-radius: 14px;
+  box-shadow: 0 12px 26px rgba(50, 44, 24, 0.32);
+  z-index: 2;
+  animation: voiceIn 0.9s cubic-bezier(0.25, 0.9, 0.35, 1) 1.05s both;
+}
+@keyframes voiceIn {
+  from { opacity: 0; transform: translateY(22px) rotate(2.8deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(1.2deg); }
+}
+.voice-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 92px;
+  height: 26px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: var(--tape);
+  box-shadow: 0 2px 6px rgba(20, 26, 16, 0.2);
+}
+.voice-btn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--note-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(50, 44, 24, 0.3);
+  transition: transform 0.2s ease;
+}
+.voice-btn:hover { transform: scale(1.06); }
+.voice-btn .ic-pause { display: none; }
+.voice-wrap.playing .voice-btn .ic-play { display: none; }
+.voice-wrap.playing .voice-btn .ic-pause { display: block; }
+.voice-meta { flex: 1; min-width: 0; }
+.voice-label {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-bottom: 7px;
+}
+.voice-track {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.voice-progress {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--note-accent);
+  transition: width 0.2s linear;
+}
+.voice-time {
+  flex: 0 0 auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+#voiceAudio { display: none; }
+
 /* the recipient's name spelt on scattered instant-photo frames */
 .tile-row {
   display: flex;
@@ -1789,7 +1977,7 @@ body.card-mode.theme-night .card-board::before {
   width: 216px;
   max-width: 44vw;
   background: #fdf9ee;
-  padding: 11px 11px 34px;
+  padding: 11px 11px 12px;
   border-radius: 3px;
   box-shadow: 0 14px 30px rgba(18, 24, 14, 0.5);
   transform: rotate(var(--pr, 0deg));
@@ -1807,6 +1995,18 @@ body.card-mode.theme-night .card-board::before {
   height: auto;
   border-radius: 1px;
   background: #d8d2c2;
+}
+/* the sender's handwritten line on the white strip; kept at a fixed
+   minimum height so caption-less polaroids look classic */
+.polaroid-cap {
+  font-family: 'Caveat', 'Playfair Display', cursive;
+  font-size: 1.08rem;
+  line-height: 1.25;
+  text-align: center;
+  color: #6b6250;
+  margin: 7px 2px 0;
+  min-height: 20px;
+  overflow-wrap: break-word;
 }
 @keyframes photoIn {
   from { opacity: 0; transform: rotate(var(--pr, 0deg)) translateY(26px) scale(0.9); }
@@ -1938,7 +2138,7 @@ body.card-mode.theme-night .card-board::before {
 <meta name="robots" content="noindex, nofollow">
 <title>A letter for you</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>${EMBEDDED_CSS}</style>
 </head>
 <body>
@@ -1964,8 +2164,9 @@ ${FLOWER_SPRITE}
     <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the envelope">
       <div class="letter-window"><svg class="env-paper" viewBox="0 0 260 160"><use href="#fl-env-paper"/></svg></div>
       <svg class="env-pocket" viewBox="0 0 300 200"><use href="#fl-env-pocket"/></svg>
+      <p class="env-name" id="envName" aria-hidden="true"></p>
       <div class="envelope-flap"><svg viewBox="0 0 300 112"><use href="#fl-env-flap"/></svg></div>
-      <div class="envelope-seal" id="envelopeSeal"><svg viewBox="0 0 100 100"><use href="#fl-seal"/></svg></div>
+      <div class="envelope-seal" id="envelopeSeal"><svg viewBox="0 0 100 100"><use href="#fl-seal"/></svg><span class="seal-initial" id="sealInitial"></span></div>
     </div>
     <p class="open-hint" id="openHint">Tap to open</p>
   </div>
@@ -1995,6 +2196,19 @@ ${FLOWER_SPRITE}
         <p class="note-sign" id="letterSign"></p>
         <p class="note-date" id="letterDate"></p>
       </div>
+    </div>
+    <div class="voice-wrap hidden" id="voiceWrap">
+      <span class="voice-tape"></span>
+      <button type="button" class="voice-btn" id="voiceBtn" aria-label="Play the voice note">
+        <svg class="ic-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8.5 6.5 L16 12 L8.5 17.5 Z" fill="currentColor"/></svg>
+        <svg class="ic-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="7.5" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/><rect x="13.3" y="6.5" width="3.2" height="11" rx="1" fill="currentColor"/></svg>
+      </button>
+      <div class="voice-meta">
+        <span class="voice-label">a voice note for you</span>
+        <span class="voice-track"><span class="voice-progress" id="voiceProgress"></span></span>
+      </div>
+      <span class="voice-time" id="voiceTime">0:00</span>
+      <audio id="voiceAudio" preload="metadata"></audio>
     </div>
     <div class="photo-stack hidden" id="photoStack"></div>
     <div class="tile-row" id="tileRow"></div>
@@ -2044,6 +2258,18 @@ ${FLOWER_SPRITE}
     });
   }
 
+  /* Read a file (used for the voice note) and return it as a data URL,
+     unmodified — audio can't be re-encoded in the browser the way
+     photos are resized, so the cap is enforced by file size instead. */
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
   function initCompose() {
     const form = $('composeForm');
     const usePassphrase = $('usePassphrase');
@@ -2075,6 +2301,36 @@ ${FLOWER_SPRITE}
     ['toName', 'fromName', 'message'].forEach((id) => $(id).addEventListener('input', updatePreview));
     $('themeRow').addEventListener('change', updatePreview);
     updatePreview();
+
+    // per-photo captions: picking photos reveals a small caption box for
+    // each one, written onto the polaroid's white strip on the card
+    const photosInput = $('photos');
+    const captionsWrap = $('photoCaptions');
+    let captionThumbUrls = [];
+    photosInput.addEventListener('change', () => {
+      captionThumbUrls.forEach((u) => URL.revokeObjectURL(u));
+      captionThumbUrls = [];
+      captionsWrap.innerHTML = '';
+      const files = Array.from(photosInput.files).slice(0, 4);
+      files.forEach((f) => {
+        const row = document.createElement('div');
+        row.className = 'caption-row';
+        const thumb = document.createElement('img');
+        const url = URL.createObjectURL(f);
+        captionThumbUrls.push(url);
+        thumb.src = url;
+        thumb.alt = '';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.maxLength = 60;
+        input.placeholder = 'a little caption (optional)';
+        input.className = 'caption-input';
+        row.appendChild(thumb);
+        row.appendChild(input);
+        captionsWrap.appendChild(row);
+      });
+      captionsWrap.classList.toggle('hidden', files.length === 0);
+    });
 
     function downloadGiftFile(wrapper, toName) {
       const html = buildStandaloneHtml(wrapper);
@@ -2120,6 +2376,25 @@ ${FLOWER_SPRITE}
       }
       sealHint.classList.remove('field-error');
       sealHint.textContent = sealHint.dataset.orig;
+      // optional voice note — validated here, read into the gift below
+      const voiceFile = $('voiceNote').files[0] || null;
+      const voiceHint = $('voiceHint');
+      const MAX_VOICE_BYTES = 1024 * 1024;
+      if (!voiceHint.dataset.orig) voiceHint.dataset.orig = voiceHint.textContent;
+      if (voiceFile && !voiceFile.type.startsWith('audio/')) {
+        voiceHint.classList.add('field-error');
+        voiceHint.textContent = "That doesn't look like an audio file — record a short memo or pick an mp3/m4a.";
+        $('voiceNote').focus();
+        return;
+      }
+      if (voiceFile && voiceFile.size > MAX_VOICE_BYTES) {
+        voiceHint.classList.add('field-error');
+        voiceHint.textContent = 'That recording is too big (max 1MB) — about 30 seconds is perfect.';
+        $('voiceNote').focus();
+        return;
+      }
+      voiceHint.classList.remove('field-error');
+      voiceHint.textContent = voiceHint.dataset.orig;
       if (!data.to || !data.from || !data.message) return;
 
       const passphrase = usePassphrase.checked ? passphraseInput.value : '';
@@ -2135,14 +2410,27 @@ ${FLOWER_SPRITE}
       submitBtn.textContent = 'Wrapping your gift…';
       try {
         // Keep photos small (max 4, downsized hard) so the whole gift
-        // always fits inside a shareable link.
+        // always fits inside a shareable link. Captions stay aligned to
+        // the photos that actually loaded.
         const photoFiles = Array.from($('photos').files).slice(0, 4);
+        const capInputs = Array.from(captionsWrap.querySelectorAll('.caption-input'));
         const photos = [];
-        for (const f of photoFiles) {
-          try { photos.push(await fileToResizedDataURL(f, 520, 0.5)); }
-          catch (err) { /* skip an unreadable image */ }
+        const captions = [];
+        for (let i = 0; i < photoFiles.length; i++) {
+          try {
+            photos.push(await fileToResizedDataURL(photoFiles[i], 520, 0.5));
+            captions.push(capInputs[i] ? capInputs[i].value.trim() : '');
+          } catch (err) { /* skip an unreadable image */ }
         }
-        if (photos.length) data.photos = photos;
+        if (photos.length) {
+          data.photos = photos;
+          if (captions.some((c) => c)) data.captions = captions;
+        }
+
+        if (voiceFile) {
+          try { data.voice = await fileToDataURL(voiceFile); }
+          catch (err) { /* skip an unreadable file */ }
+        }
 
         const wrapper = await buildWrapper(data, passphrase);
         lastWrapper = wrapper;
@@ -2199,6 +2487,10 @@ ${FLOWER_SPRITE}
       form.reset();
       passphraseInput.classList.add('hidden');
       resultCard.classList.add('hidden');
+      captionThumbUrls.forEach((u) => URL.revokeObjectURL(u));
+      captionThumbUrls = [];
+      captionsWrap.innerHTML = '';
+      captionsWrap.classList.add('hidden');
       updatePreview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
