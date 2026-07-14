@@ -65,12 +65,31 @@
         <p class="muted small file-hint" id="photoHint">Up to 4 pictures — they appear on the card when the letter is revealed. Tap a photo there to enlarge it.</p>
       </div>
 
+      <div class="field">
+        <label for="openAt">Seal until a date</label>
+        <input type="datetime-local" id="openAt">
+        <p class="muted small file-hint" id="sealHint">Sending it early? The envelope stays sealed behind a live countdown and only opens once this moment arrives — perfect for a birthday at midnight.</p>
+      </div>
+
       <div class="field field-last">
         <label class="checkbox-label">
           <input type="checkbox" id="usePassphrase">
           Add a passphrase (only someone who knows it can read the letter)
         </label>
         <input type="password" id="passphrase" class="passphrase-input hidden" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="form-section preview-section" aria-hidden="true">
+      <p class="section-label">How it will look</p>
+      <div class="preview-board pv-garden" id="previewBoard">
+        <div class="preview-note">
+          <span class="preview-tape"></span>
+          <p class="pv-from" id="pvFrom">From: …</p>
+          <p class="pv-for" id="pvTo">For you</p>
+          <p class="pv-body" id="pvBody">Your words will bloom here as you write…</p>
+          <p class="pv-sign" id="pvSign"></p>
+        </div>
       </div>
     </div>
 
@@ -123,17 +142,24 @@
   </div>
 
   <div id="cardView" class="card-board hidden">
-    <div class="decor d-blob b1"></div>
-    <div class="decor d-blob b2"></div>
-    <div class="decor d-blob b3"></div>
-    <div class="decor d-record"></div>
-    <div class="decor d-scrap s1">the afternoon kept its light a little longer, pressed here between the pages like a petal &mdash; proof that ordinary hours can be saved, folded, and sent on</div>
-    <div class="decor d-scrap s2">slow down, the ink whispers; every letter is a small parcel of time, carried by hand across the quiet distance between two people</div>
+    <div class="decor d-page pg1" aria-hidden="true">&hellip;une image rare de la lumi&egrave;re, la m&eacute;moire de ces apr&egrave;s-midis o&ugrave; les fleurs gardaient nos secrets ; chaque p&eacute;tale, une phrase d&eacute;licieuse de ce qui fut choisi, press&eacute;, gard&eacute; entre les pages&hellip;</div>
+    <div class="decor d-page pg2" aria-hidden="true">&hellip;est-il possible que le jardin se souvienne de nous ; on &eacute;crit pour que les heures ordinaires deviennent tendres, et que la distance apprenne la patience des roses&hellip;</div>
+    <div class="decor d-patch h1"></div>
+    <div class="decor d-patch h2"></div>
+    <span class="decor d-bloom fb1"><svg viewBox="0 0 100 100"><use href="#fl-rose"/></svg></span>
+    <span class="decor d-bloom fb2"><svg viewBox="0 0 100 100"><use href="#fl-cosmos"/></svg></span>
+    <span class="decor d-bloom fb3"><svg viewBox="0 0 100 100"><use href="#fl-dahlia-pe"/></svg></span>
+    <span class="decor d-bloom fb4"><svg viewBox="0 0 100 100"><use href="#fl-hydrangea"/></svg></span>
+    <svg class="decor d-oframe" viewBox="0 0 120 150" aria-hidden="true">
+      <ellipse cx="60" cy="75" rx="56" ry="71" fill="none" stroke="#c9a648" stroke-width="7"/>
+      <ellipse cx="60" cy="75" rx="49" ry="64" fill="#f4eedd" stroke="#b08d35" stroke-width="2"/>
+      <g transform="translate(19 34) scale(0.82)"><use href="#fl-rose"/></g>
+    </svg>
+    <div class="decor d-disc c1"></div>
+    <div class="decor d-disc c2"></div>
     <div class="decor d-tape t1"></div>
     <div class="decor d-tape t2"></div>
-    <svg class="decor d-star" viewBox="0 0 44 44"><path d="M22 3 L27 16 L41 17 L30 26 L34 40 L22 32 L10 40 L14 26 L3 17 L17 16 Z"/></svg>
     <div class="note-wrap">
-      <svg class="note-clip" viewBox="0 0 120 92" aria-hidden="true"><defs><linearGradient id="clipg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8bd7e"/><stop offset=".5" stop-color="#b3924e"/><stop offset="1" stop-color="#8f7136"/></linearGradient></defs><path fill="url(#clipg)" fill-rule="evenodd" d="M34 90 L86 90 L80 38 L74 30 L70 22 Q70 12 60 12 Q50 12 50 22 L46 30 L40 38 Z M60 26 a7 7 0 1 0 0.01 0 Z"/><rect x="30" y="86" width="60" height="6" rx="2" fill="#a3854a"/><rect x="38" y="52" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/><rect x="38" y="60" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/></svg>
       <div class="note">
         <p class="note-from" id="letterFrom"></p>
         <p class="note-for" id="letterTo"></p>

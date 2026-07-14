@@ -174,41 +174,46 @@
   const FLOWER_DEFS = '<defs>'
     /* per-petal gradients run base->tip so every rotated petal copy is
        shaded along its own axis, giving the blooms dimensionality */
-    + '<linearGradient id="flg-lp-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#cd7590"/><stop offset="30%" stop-color="#e39cb0"/><stop offset="70%" stop-color="#f6cbd6"/><stop offset="100%" stop-color="#fdf0f3"/></linearGradient>'
-    + '<linearGradient id="flg-lp-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b5637f"/><stop offset="40%" stop-color="#d88ea3"/><stop offset="100%" stop-color="#f4c6d2"/></linearGradient>'
-    + '<linearGradient id="flg-lw-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#d6cea9"/><stop offset="25%" stop-color="#ede6cb"/><stop offset="65%" stop-color="#faf6e9"/><stop offset="100%" stop-color="#ffffff"/></linearGradient>'
-    + '<linearGradient id="flg-lw-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c0ba92"/><stop offset="45%" stop-color="#ded7b6"/><stop offset="100%" stop-color="#f3efdd"/></linearGradient>'
-    + '<linearGradient id="flg-lg-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c98f43"/><stop offset="30%" stop-color="#e0ab5c"/><stop offset="70%" stop-color="#f3d092"/><stop offset="100%" stop-color="#faedcd"/></linearGradient>'
+    + '<linearGradient id="flg-lp-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#bc5a7e"/><stop offset="26%" stop-color="#dd88a4"/><stop offset="52%" stop-color="#f0b3c6"/><stop offset="78%" stop-color="#f9d9e3"/><stop offset="100%" stop-color="#fdf2f5"/></linearGradient>'
+    + '<linearGradient id="flg-lp-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a54e6f"/><stop offset="38%" stop-color="#cf7f97"/><stop offset="72%" stop-color="#ecb2c3"/><stop offset="100%" stop-color="#f6ccd7"/></linearGradient>'
+    + '<linearGradient id="flg-lw-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#cdc49a"/><stop offset="24%" stop-color="#e8e0c2"/><stop offset="55%" stop-color="#f7f3e3"/><stop offset="82%" stop-color="#fdfbf3"/><stop offset="100%" stop-color="#ffffff"/></linearGradient>'
+    + '<linearGradient id="flg-lw-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b5ae85"/><stop offset="45%" stop-color="#d8d1ae"/><stop offset="100%" stop-color="#f1edda"/></linearGradient>'
+    + '<linearGradient id="flg-lg-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b97e30"/><stop offset="28%" stop-color="#daa04c"/><stop offset="56%" stop-color="#eec47e"/><stop offset="82%" stop-color="#f7e2b2"/><stop offset="100%" stop-color="#fbf0d6"/></linearGradient>'
     + '<linearGradient id="flg-lg-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#ad7734"/><stop offset="45%" stop-color="#cf954b"/><stop offset="100%" stop-color="#edc582"/></linearGradient>'
-    + '<linearGradient id="flg-rose-petalO" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c2603c"/><stop offset="35%" stop-color="#dd8a5f"/><stop offset="75%" stop-color="#f3c19a"/><stop offset="100%" stop-color="#fadfc4"/></linearGradient>'
+    + '<linearGradient id="flg-rose-petalO" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b2512e"/><stop offset="30%" stop-color="#d67e50"/><stop offset="58%" stop-color="#edb083"/><stop offset="84%" stop-color="#f8d6b3"/><stop offset="100%" stop-color="#fbe6cd"/></linearGradient>'
     + '<linearGradient id="flg-rose-petalM" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b25535"/><stop offset="45%" stop-color="#d47a4e"/><stop offset="100%" stop-color="#efb287"/></linearGradient>'
     + '<linearGradient id="flg-rose-petalI" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a54c2f"/><stop offset="55%" stop-color="#c76c42"/><stop offset="100%" stop-color="#e8a172"/></linearGradient>'
-    + '<linearGradient id="flg-daisy-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#ddd8c6"/><stop offset="35%" stop-color="#f3f1e8"/><stop offset="100%" stop-color="#ffffff"/></linearGradient>'
-    + '<linearGradient id="flg-zin-petalO" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b34a42"/><stop offset="45%" stop-color="#d3705f"/><stop offset="100%" stop-color="#f0a494"/></linearGradient>'
+    + '<linearGradient id="flg-daisy-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#d4cfb8"/><stop offset="32%" stop-color="#efece0"/><stop offset="70%" stop-color="#fbfaf5"/><stop offset="100%" stop-color="#ffffff"/></linearGradient>'
+    + '<linearGradient id="flg-zin-petalO" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a8423c"/><stop offset="34%" stop-color="#cc685a"/><stop offset="68%" stop-color="#e79383"/><stop offset="100%" stop-color="#f5b2a2"/></linearGradient>'
     + '<linearGradient id="flg-zin-petalI" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#cc6a58"/><stop offset="100%" stop-color="#f2ab9b"/></linearGradient>'
     + '<linearGradient id="flg-anem-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#d69a8b"/><stop offset="45%" stop-color="#f0cec1"/><stop offset="100%" stop-color="#fdf5f0"/></linearGradient>'
     + '<linearGradient id="flg-leaf-blade" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#8fa77e"/><stop offset="100%" stop-color="#c2d4ae"/></linearGradient>'
-    + '<radialGradient id="flg-shadow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#96705a" stop-opacity=".18"/><stop offset="70%" stop-color="#96705a" stop-opacity=".07"/><stop offset="100%" stop-color="#96705a" stop-opacity="0"/></radialGradient>'
+    + '<radialGradient id="flg-shadow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#8a6350" stop-opacity=".23"/><stop offset="65%" stop-color="#8a6350" stop-opacity=".09"/><stop offset="100%" stop-color="#8a6350" stop-opacity="0"/></radialGradient>'
     + '<radialGradient id="flg-rose-core" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#dd906f"/><stop offset="100%" stop-color="#a85636"/></radialGradient>'
     + '<radialGradient id="flg-daisy-core" cx="42%" cy="38%" r="62%"><stop offset="0%" stop-color="#f7d883"/><stop offset="60%" stop-color="#e4b153"/><stop offset="100%" stop-color="#c08c33"/></radialGradient>'
     + '<radialGradient id="flg-plumeria" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f2c14e"/><stop offset="25%" stop-color="#f9e6b8"/><stop offset="60%" stop-color="#fdf7ea"/><stop offset="100%" stop-color="#ffffff"/></radialGradient>'
-    + '<linearGradient id="flg-sun-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c98f30"/><stop offset="45%" stop-color="#eebd58"/><stop offset="100%" stop-color="#f8df9c"/></linearGradient>'
+    + '<linearGradient id="flg-sun-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#bb7f22"/><stop offset="35%" stop-color="#e7b348"/><stop offset="70%" stop-color="#f6d67f"/><stop offset="100%" stop-color="#fbe9b2"/></linearGradient>'
     + '<linearGradient id="flg-sun-petalB" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a8721f"/><stop offset="50%" stop-color="#d59c3c"/><stop offset="100%" stop-color="#eecb7c"/></linearGradient>'
     + '<radialGradient id="flg-sun-core" cx="42%" cy="38%" r="65%"><stop offset="0%" stop-color="#8a5e30"/><stop offset="100%" stop-color="#573a1c"/></radialGradient>'
-    + '<linearGradient id="flg-dahO-out" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c26b40"/><stop offset="45%" stop-color="#e2915e"/><stop offset="100%" stop-color="#f6c69c"/></linearGradient>'
-    + '<linearGradient id="flg-dahO-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b25c36"/><stop offset="55%" stop-color="#d67f4e"/><stop offset="100%" stop-color="#efb384"/></linearGradient>'
-    + '<linearGradient id="flg-dahP-out" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#d3946c"/><stop offset="45%" stop-color="#eebd97"/><stop offset="100%" stop-color="#fae4cc"/></linearGradient>'
-    + '<linearGradient id="flg-dahP-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c58259"/><stop offset="55%" stop-color="#e3a97e"/><stop offset="100%" stop-color="#f6d2b0"/></linearGradient>'
+    + '<linearGradient id="flg-dahO-out" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#b45c31"/><stop offset="36%" stop-color="#dd8855"/><stop offset="72%" stop-color="#f2ba8b"/><stop offset="100%" stop-color="#fbe0c2"/></linearGradient>'
+    + '<linearGradient id="flg-dahO-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a75330"/><stop offset="50%" stop-color="#d17a48"/><stop offset="100%" stop-color="#f0b384"/></linearGradient>'
+    + '<linearGradient id="flg-dahP-out" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c8855a"/><stop offset="40%" stop-color="#eab68c"/><stop offset="78%" stop-color="#f8ddc0"/><stop offset="100%" stop-color="#fdf0e0"/></linearGradient>'
+    + '<linearGradient id="flg-dahP-mid" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#ad6238"/><stop offset="50%" stop-color="#d6945c"/><stop offset="100%" stop-color="#f0c294"/></linearGradient>'
     + '<linearGradient id="flg-iris-fall" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5c4d96"/><stop offset="55%" stop-color="#8172b6"/><stop offset="100%" stop-color="#b1a4d6"/></linearGradient>'
     + '<linearGradient id="flg-iris-std" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#8a7cba"/><stop offset="55%" stop-color="#ab9ecf"/><stop offset="100%" stop-color="#d6cfe9"/></linearGradient>'
-    + '<linearGradient id="flg-cos-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#c9769a"/><stop offset="50%" stop-color="#e6a4bf"/><stop offset="100%" stop-color="#f7d6e2"/></linearGradient>'
+    + '<linearGradient id="flg-cos-petal" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#bb6289"/><stop offset="38%" stop-color="#dd97b4"/><stop offset="74%" stop-color="#f1c4d6"/><stop offset="100%" stop-color="#f9e0ea"/></linearGradient>'
     + '<radialGradient id="flg-seal" cx="42%" cy="36%" r="70%"><stop offset="0%" stop-color="#a186c6"/><stop offset="45%" stop-color="#7d5fa6"/><stop offset="100%" stop-color="#59417f"/></radialGradient>'
     /* soft depth shadow baked into every bloom (cheap: no filters) */
     + '<g id="fl-shadow"><ellipse cx="52" cy="55" rx="34" ry="30" fill="url(#flg-shadow)"/></g>'
-    /* gentle watercolor-bleed blur applied to every bloom's outer group,
-       so edges soften and colors feather like pigment on wet paper
-       instead of reading as crisp vector shapes */
-    + '<filter id="flt-soft" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur in="SourceGraphic" stdDeviation="0.55"/></filter>'
+    /* watercolor bleed applied to every bloom's outer group: fractal
+       turbulence nudges each outline so petal edges waver organically,
+       like wet pigment finding the paper grain, then a soft blur
+       feathers the colors together */
+    + '<filter id="flt-soft" x="-25%" y="-25%" width="150%" height="150%">'
+    +   '<feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="grain"/>'
+    +   '<feDisplacementMap in="SourceGraphic" in2="grain" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="wobble"/>'
+    +   '<feGaussianBlur in="wobble" stdDeviation="0.5"/>'
+    + '</filter>'
 
     /* --- lily: layered whorls, shaded per petal, speckles, stamens --- */
     + '<g id="fl-lily-back">'
@@ -237,27 +242,37 @@
     +   '<g transform="rotate(120 50 50)"><circle cx="48" cy="35" r="1"/><circle cx="52" cy="31" r=".9"/><circle cx="49" cy="27" r=".8"/></g>'
     +   '<g transform="rotate(240 50 50)"><circle cx="48" cy="35" r="1"/><circle cx="52" cy="31" r=".9"/><circle cx="51.5" cy="38" r="1"/></g>'
     + '</g>'
+    /* off-centre light washes on the three front petals, so each bloom
+       reads as lit from one side the way a wet wash dries unevenly */
+    + '<g id="fl-lily-glints">'
+    +   '<ellipse cx="47.5" cy="25" rx="4" ry="9.5" transform="rotate(60 50 50)"/>'
+    +   '<ellipse cx="47.5" cy="25" rx="4" ry="9.5" transform="rotate(180 50 50)"/>'
+    +   '<ellipse cx="47.5" cy="25" rx="4" ry="9.5" transform="rotate(300 50 50)"/>'
+    + '</g>'
     + '<g id="fl-lily-pink" filter="url(#flt-soft)">'
     +   '<use href="#fl-shadow"/>'
-    +   '<use href="#fl-lily-back" fill="url(#flg-lp-petalB)"/>'
-    +   '<use href="#fl-lily-speckles" fill="#c2547d" opacity=".65"/>'
-    +   '<use href="#fl-lily-front" fill="url(#flg-lp-petal)"/>'
-    +   '<use href="#fl-lily-ribs" stroke="#d989ab"/>'
+    +   '<use href="#fl-lily-back" fill="url(#flg-lp-petalB)" stroke="#9c476a" stroke-width=".7" stroke-opacity=".3"/>'
+    +   '<use href="#fl-lily-speckles" fill="#b34a72" opacity=".7"/>'
+    +   '<use href="#fl-lily-front" fill="url(#flg-lp-petal)" stroke="#c06687" stroke-width=".6" stroke-opacity=".28"/>'
+    +   '<use href="#fl-lily-glints" fill="#ffffff" opacity=".3"/>'
+    +   '<use href="#fl-lily-ribs" stroke="#cf7c9d"/>'
     +   '<g stroke="#f6e3ae" fill="#d9622f"><use href="#fl-lily-stamens"/></g>'
     + '</g>'
     + '<g id="fl-lily-white" filter="url(#flt-soft)">'
     +   '<use href="#fl-shadow"/>'
-    +   '<use href="#fl-lily-back" fill="url(#flg-lw-petalB)"/>'
-    +   '<use href="#fl-lily-front" fill="url(#flg-lw-petal)"/>'
-    +   '<use href="#fl-lily-ribs" stroke="#d8d0a9"/>'
+    +   '<use href="#fl-lily-back" fill="url(#flg-lw-petalB)" stroke="#a89f74" stroke-width=".7" stroke-opacity=".3"/>'
+    +   '<use href="#fl-lily-front" fill="url(#flg-lw-petal)" stroke="#c4bb90" stroke-width=".6" stroke-opacity=".3"/>'
+    +   '<use href="#fl-lily-glints" fill="#fffef7" opacity=".4"/>'
+    +   '<use href="#fl-lily-ribs" stroke="#cfc69d"/>'
     +   '<g stroke="#e5d094" fill="#c48c50"><use href="#fl-lily-stamens"/></g>'
     + '</g>'
     + '<g id="fl-lily-gold" filter="url(#flt-soft)">'
     +   '<use href="#fl-shadow"/>'
-    +   '<use href="#fl-lily-back" fill="url(#flg-lg-petalB)"/>'
-    +   '<use href="#fl-lily-speckles" fill="#9a682e" opacity=".5"/>'
-    +   '<use href="#fl-lily-front" fill="url(#flg-lg-petal)"/>'
-    +   '<use href="#fl-lily-ribs" stroke="#d09c55"/>'
+    +   '<use href="#fl-lily-back" fill="url(#flg-lg-petalB)" stroke="#96662a" stroke-width=".7" stroke-opacity=".3"/>'
+    +   '<use href="#fl-lily-speckles" fill="#8f5f26" opacity=".55"/>'
+    +   '<use href="#fl-lily-front" fill="url(#flg-lg-petal)" stroke="#bd8438" stroke-width=".6" stroke-opacity=".28"/>'
+    +   '<use href="#fl-lily-glints" fill="#fff8e4" opacity=".32"/>'
+    +   '<use href="#fl-lily-ribs" stroke="#c28f45"/>'
     +   '<g stroke="#f8ecc9" fill="#a06630"><use href="#fl-lily-stamens"/></g>'
     + '</g>'
 
@@ -275,10 +290,12 @@
     +   '<g transform="rotate(46 50 50) translate(50 50) scale(.45) translate(-50 -50)">'
     +     '<use href="#fl-rose-whorlO" fill="url(#flg-rose-petalI)" stroke="#a9603c" stroke-width="1" stroke-opacity=".3"/>'
     +   '</g>'
+    +   '<circle cx="50" cy="50" r="14.5" fill="#8d4526" opacity=".18"/>'
     +   '<circle cx="50" cy="50" r="8.5" fill="url(#flg-rose-core)"/>'
     +   '<path d="M56 47 A7.5 7.5 0 1 0 50 57" stroke="#a25a3c" stroke-width="1.8" fill="none" opacity=".45"/>'
     +   '<path d="M53 48.5 A4 4 0 1 0 50 53.5" stroke="#a25a3c" stroke-width="1.4" fill="none" opacity=".5"/>'
-    +   '<ellipse cx="42" cy="24" rx="10" ry="5" transform="rotate(-32 42 24)" fill="#ffffff" opacity=".22"/>'
+    +   '<ellipse cx="42" cy="24" rx="10" ry="5" transform="rotate(-32 42 24)" fill="#ffffff" opacity=".24"/>'
+    +   '<ellipse cx="61" cy="68" rx="8" ry="3.8" transform="rotate(22 61 68)" fill="#ffffff" opacity=".12"/>'
     + '</g>'
 
     /* --- daisy: two rings of slim white petals, gold heart --- */
@@ -480,7 +497,7 @@
      a canvas (no external libraries) so it works in every browser. */
   function saveCardImage(data, theme) {
     const PAINT = {
-      garden: { bg1: '#57683f', bg2: '#2e3a26', note: '#ece3cb', ink: '#4a4234', accent: '#6d7f4e', tb: '#efe8d4', tbd: '#33402a', ti: '#2e3a26' },
+      garden: { bg1: '#ece4cd', bg2: '#d8cba8', note: '#f8f6ef', ink: '#4a4234', accent: '#5c7050', tb: '#fbfaf5', tbd: '#ebe5d2', ti: '#29452e' },
       kraft:  { bg1: '#c1a06d', bg2: '#8a6a3c', note: '#f3ead3', ink: '#5a4a30', accent: '#8a6a3c', tb: '#efe2c6', tbd: '#8a6a3c', ti: '#6b4f2a' },
       night:  { bg1: '#33355a', bg2: '#171a2e', note: '#e9e6d8', ink: '#3a3550', accent: '#8f93c8', tb: '#e6e3d4', tbd: '#454a7a', ti: '#3a3550' },
       blush:  { bg1: '#e7b7c6', bg2: '#d0819c', note: '#fff2f5', ink: '#7a4b58', accent: '#c06e88', tb: '#ffe6ee', tbd: '#c06e88', ti: '#8a4a60' }
@@ -848,9 +865,10 @@
       const vw = window.innerWidth, vh = window.innerHeight;
       const R = (a, b) => a + Math.random() * (b - a);
       // Phyllotaxis spiral: flowers are laid out on a sunflower-seed
-      // spiral around the envelope. Each one pops into place where it
-      // lives (a short drift from the centre, a gentle scale-up with
-      // a small overshoot), so the wall grows outward ring by ring.
+      // spiral around the envelope. Each one grows from a bud that
+      // emerges well inside the already-bloomed mass and eases outward
+      // into place, so the wall reads as one body swelling continuously
+      // rather than separate flowers popping over empty background.
       const GOLDEN_ANGLE = 2.39996;
       const maxR = Math.hypot(Math.max(originX, vw - originX), Math.max(originY, vh - originY)) + 90;
       let count = 0, maxEnd = 0;
@@ -877,15 +895,17 @@
         use.setAttribute('href', '#fl-' + variety);
         el.appendChild(use);
         const r1 = R(-28, 28);
-        const delay = 0.05 + (r / maxR) * 2.1 + R(0, 0.18);
-        const dur = R(0.7, 0.95);
+        // small jitter and long, heavily overlapping growth windows keep
+        // the blooming front continuous instead of staccato
+        const delay = 0.05 + (r / maxR) * 1.9 + R(0, 0.1);
+        const dur = R(0.9, 1.2);
         if (delay + dur > maxEnd) maxEnd = delay + dur;
         // Fall path: a mid keyframe (--xf/--yf) lets each flower drift
         // sideways on its way down instead of dropping in a straight line.
         const fx = x - size / 2 + R(-110, 110);
         const fy = vh + 240;
-        el.style.cssText = '--xa:' + (originX + r * 0.82 * Math.cos(ang) - size / 2) + 'px;'
-          + '--ya:' + (originY + r * 0.82 * Math.sin(ang) - size / 2) + 'px;'
+        el.style.cssText = '--xa:' + (originX + r * 0.62 * Math.cos(ang) - size / 2) + 'px;'
+          + '--ya:' + (originY + r * 0.62 * Math.sin(ang) - size / 2) + 'px;'
           + '--x1:' + (x - size / 2) + 'px;--y1:' + (y - size / 2) + 'px;'
           + '--r0:' + (r1 - R(12, 30)) + 'deg;--r1:' + r1 + 'deg;'
           + '--delay:' + delay + 's;--dur:' + dur + 's;'
@@ -913,9 +933,9 @@
       overlay.addEventListener('click', () => {
         if (overlay.classList.contains('falling')) return;
         overlay.classList.add('falling');
-        // the card then cross-fades up behind the falling flowers so
-        // the letter emerges rather than cutting in
-        setTimeout(openCard, 900);
+        // the card cross-fades up while the flowers are still dense, so
+        // the letter emerges from behind them with no bare-stage flash
+        setTimeout(openCard, 750);
         setTimeout(() => { overlay.remove(); }, 3600);
       });
     }
@@ -942,8 +962,51 @@
   }
 
   async function initGiftView(wrapper) {
+    // Scheduled letters: if the sender sealed the gift until a future
+    // moment, hold the envelope behind a live countdown that opens the
+    // instant it arrives. Runs entirely on the recipient's clock, so it
+    // works in hosted links and offline gift files alike.
+    function gateThenRender(data) {
+      const openAt = data.openAt ? new Date(data.openAt) : null;
+      if (!openAt || isNaN(openAt) || openAt.getTime() <= Date.now()) {
+        renderLetter(data);
+        return;
+      }
+      const card = document.createElement('div');
+      card.className = 'card countdown-card';
+      card.innerHTML =
+        '<div class="seal-mark"><svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true"><use href="#fl-seal"/></svg></div>'
+        + '<h2>This letter is still sealed</h2>'
+        + '<p class="muted">It opens ' + openAt.toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + '.</p>'
+        + '<p class="countdown-time" role="timer" aria-live="off"></p>';
+      const timeEl = card.querySelector('.countdown-time');
+      $('giftView').prepend(card);
+      const pad = (n) => String(n).padStart(2, '0');
+      let timer = null, opened = false;
+      function tick() {
+        if (opened) return;
+        const left = openAt.getTime() - Date.now();
+        if (left <= 0) {
+          opened = true;
+          if (timer !== null) clearInterval(timer);
+          card.remove();
+          renderLetter(data);
+          return;
+        }
+        const s = Math.floor(left / 1000);
+        const days = Math.floor(s / 86400);
+        timeEl.textContent =
+          (days > 0 ? days + (days === 1 ? ' day ' : ' days ') : '')
+          + pad(Math.floor((s % 86400) / 3600)) + ':'
+          + pad(Math.floor((s % 3600) / 60)) + ':'
+          + pad(s % 60);
+      }
+      tick();
+      if (!opened) timer = setInterval(tick, 1000);
+    }
+
     if (!wrapper.enc) {
-      renderLetter(wrapper.d);
+      gateThenRender(wrapper.d);
       return;
     }
 
@@ -959,7 +1022,7 @@
       try {
         const data = await decryptPayload(wrapper, passphrase);
         gate.classList.add('hidden');
-        renderLetter(data);
+        gateThenRender(data);
       } catch (err) {
         errorMsg.classList.remove('hidden');
       }
@@ -1266,6 +1329,24 @@ textarea { resize: vertical; line-height: 1.5; }
 
 .error { color: #b3423c; font-size: 0.88rem; margin-top: 10px; }
 
+/* scheduled letters: sealed-countdown gate shown until the sender's
+   chosen moment arrives, then the envelope takes its place */
+.countdown-card { text-align: center; margin-top: 16vh; }
+.countdown-card .seal-mark {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 4px 9px rgba(90, 60, 110, 0.3));
+}
+.countdown-time {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: var(--moss);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  margin: 14px 0 2px;
+}
+
 /* ---------- gift stage: watercolor envelope ---------- */
 #passphraseGate h2 { display: flex; align-items: center; gap: 8px; }
 .lock-icon { display: inline-flex; color: var(--rose-dark); }
@@ -1386,16 +1467,19 @@ textarea { resize: vertical; line-height: 1.5; }
     burstPop var(--dur, 0.85s) var(--delay, 0s) both,
     burstSway 4.5s ease-in-out calc(var(--delay, 0s) + var(--dur, 0.85s)) infinite alternate;
 }
+/* each bloom grows from a bud at the edge of the mass: opacity lands
+   almost immediately (while the flower is still tiny, so there is no
+   visible pop) and the rest is pure, eased growth outward */
 @keyframes burstPop {
   0% {
     opacity: 0;
-    transform: translate(var(--xa), var(--ya)) rotate(var(--r0)) scale(0.3);
-    animation-timing-function: cubic-bezier(0.34, 0.4, 0.4, 1);
+    transform: translate(var(--xa), var(--ya)) rotate(var(--r0)) scale(0.04);
+    animation-timing-function: cubic-bezier(0.22, 0.65, 0.32, 1);
   }
-  32% { opacity: 1; }
-  70% {
-    transform: translate(var(--x1), var(--y1)) rotate(var(--r1)) scale(1.05);
-    animation-timing-function: cubic-bezier(0.3, 0.3, 0.3, 1);
+  12% { opacity: 1; }
+  78% {
+    transform: translate(var(--x1), var(--y1)) rotate(var(--r1)) scale(1.045);
+    animation-timing-function: cubic-bezier(0.33, 0.15, 0.35, 1);
   }
   100% {
     opacity: 1;
@@ -1447,27 +1531,25 @@ textarea { resize: vertical; line-height: 1.5; }
    Themeable via variables; body.card-mode carries the default (garden)
    palette and the theme-* classes override it. */
 body.card-mode {
-  --board: #57683f;
-  --board-mid: #4b5b36;
-  --board-deep: #3f4d32;
-  --glow1: rgba(110, 128, 78, 0.55);
-  --glow2: rgba(46, 58, 38, 0.6);
-  --note-paper: #ece3cb;
+  --board: #ece4cd;
+  --board-mid: #e4d9bc;
+  --board-deep: #d8cba8;
+  --glow1: rgba(215, 150, 172, 0.42);
+  --glow2: rgba(142, 162, 106, 0.45);
+  --note-paper: #f8f6ef;
   --note-ink: #4a4234;
-  --note-accent: #6d7f4e;
-  --tile-bg: #efe8d4;
-  --tile-border: #33402a;
-  --tile-ink: #2e3a26;
-  --blob-a: #6d7f4e;
-  --blob-b: #33402a;
-  --blob-c: #66784a;
-  --scrap-bg: #e9e2cf;
-  --scrap-ink: #6b6552;
-  --tape: rgba(150, 168, 110, 0.55);
-  --star-fill: #93a56d;
-  --star-stroke: #748551;
-  --record-a: #5c6b45;
-  --record-b: #22271d;
+  --note-accent: #5c7050;
+  --tile-bg: #fbfaf5;
+  --tile-border: #ebe5d2;
+  --tile-ink: #29452e;
+  --blob-a: #a9bd88;
+  --blob-b: #8fa26f;
+  --blob-c: #bccd9c;
+  --scrap-bg: #f3ecd8;
+  --scrap-ink: #857a5f;
+  --tape: rgba(188, 168, 118, 0.55);
+  --record-a: #e6ddc4;
+  --record-b: #b3a687;
   background:
     radial-gradient(560px 420px at 88% 6%, var(--glow1) 0%, transparent 65%),
     radial-gradient(640px 520px at 4% 78%, var(--glow2) 0%, transparent 60%),
@@ -1478,31 +1560,31 @@ body.card-mode.theme-kraft {
   --board: #c1a06d; --board-mid: #a9854f; --board-deep: #8a6a3c;
   --glow1: rgba(240, 226, 196, 0.5); --glow2: rgba(120, 92, 52, 0.4);
   --note-paper: #f5ecd6; --note-ink: #5a4a30; --note-accent: #9a763f;
-  --tile-bg: #efe2c6; --tile-border: #8a6a3c; --tile-ink: #6b4f2a;
+  --tile-bg: #f8f1de; --tile-border: #e6d8b6; --tile-ink: #6b4f2a;
   --blob-a: #cdb083; --blob-b: #8a6a3c; --blob-c: #b89a68;
   --scrap-bg: #efe6ce; --scrap-ink: #766545;
-  --tape: rgba(190, 165, 120, 0.55); --star-fill: #cdb083; --star-stroke: #9a763f;
-  --record-a: #a9854f; --record-b: #4a3820;
+  --tape: rgba(190, 165, 120, 0.55);
+  --record-a: #d9c69a; --record-b: #a1855a;
 }
 body.card-mode.theme-night {
   --board: #33355a; --board-mid: #24263f; --board-deep: #14162a;
   --glow1: rgba(120, 128, 200, 0.4); --glow2: rgba(20, 22, 44, 0.7);
   --note-paper: #e9e6d8; --note-ink: #3a3550; --note-accent: #6d72ad;
-  --tile-bg: #e6e3d4; --tile-border: #454a7a; --tile-ink: #3a3550;
+  --tile-bg: #edebe0; --tile-border: #d9d6c4; --tile-ink: #3a3550;
   --blob-a: #3d4270; --blob-b: #1c1e38; --blob-c: #4a4f85;
   --scrap-bg: #e6e2d2; --scrap-ink: #55506e;
-  --tape: rgba(130, 138, 200, 0.4); --star-fill: #d8d29a; --star-stroke: #b7b06a;
-  --record-a: #3d4270; --record-b: #101124;
+  --tape: rgba(130, 138, 200, 0.4);
+  --record-a: #565b8c; --record-b: #23253f;
 }
 body.card-mode.theme-blush {
   --board: #e7b7c6; --board-mid: #dd9db2; --board-deep: #d0819c;
   --glow1: rgba(255, 235, 242, 0.6); --glow2: rgba(200, 120, 150, 0.4);
   --note-paper: #fff2f5; --note-ink: #7a4b58; --note-accent: #c06e88;
-  --tile-bg: #ffe6ee; --tile-border: #c06e88; --tile-ink: #8a4a60;
+  --tile-bg: #fff7f9; --tile-border: #f6e0e8; --tile-ink: #8a4a60;
   --blob-a: #efc3d0; --blob-b: #cf88a2; --blob-c: #f0cdd8;
   --scrap-bg: #ffe9ef; --scrap-ink: #9c6b78;
-  --tape: rgba(224, 150, 175, 0.5); --star-fill: #f0aac0; --star-stroke: #c06e88;
-  --record-a: #e0a3b8; --record-b: #9c5a72;
+  --tape: rgba(224, 150, 175, 0.5);
+  --record-a: #ecc3d1; --record-b: #b87a92;
 }
 body.card-mode .bg-decor,
 body.card-mode .gift-footer { display: none; }
@@ -1539,43 +1621,65 @@ body.card-mode.theme-night .card-board::before {
      emerges gently from behind the falling flowers instead of cutting in */
   opacity: 0;
   transform: translateY(18px) scale(0.985);
-  transition: opacity 1.1s ease, transform 1.25s cubic-bezier(0.2, 0.75, 0.25, 1);
+  transition: opacity 1.35s cubic-bezier(0.3, 0.4, 0.3, 1), transform 1.5s cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 .card-board.revealed { opacity: 1; transform: none; }
 .decor { position: absolute; pointer-events: none; }
 
-/* painted blobs */
-.d-blob { border-radius: 46% 54% 58% 42% / 52% 44% 56% 48%; }
-.b1 { width: 300px; height: 210px; left: -110px; top: 40px; background: var(--blob-a); opacity: 0.5; transform: rotate(-14deg); }
-.b2 { width: 260px; height: 180px; right: -90px; top: 300px; background: var(--blob-b); opacity: 0.55; transform: rotate(11deg); }
-.b3 { width: 320px; height: 200px; left: -80px; bottom: 60px; background: var(--blob-c); opacity: 0.4; transform: rotate(7deg); }
-
-/* vinyl record peeking from the left */
-.d-record {
-  width: 250px; height: 250px;
-  left: -125px; top: 150px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, var(--record-a) 0 17%, var(--record-b) 17% 19%, transparent 19%),
-    repeating-radial-gradient(circle, var(--record-b) 0 3px, var(--record-a) 3px 6px);
-  box-shadow: 0 10px 30px rgba(20, 26, 16, 0.5);
-  transform: rotate(18deg);
-}
-
-/* torn newsprint scraps */
-.d-scrap {
-  width: 190px;
+/* torn old-book pages, their print peeking out from under everything */
+.d-page {
+  width: 240px;
   background: var(--scrap-bg);
   color: var(--scrap-ink);
   font-family: 'Playfair Display', serif;
-  font-size: 0.6rem;
-  line-height: 1.55;
-  padding: 14px 16px;
+  font-style: italic;
+  font-size: 0.64rem;
+  line-height: 1.75;
+  text-align: justify;
+  padding: 18px 20px;
   clip-path: polygon(2% 6%, 14% 0%, 34% 3%, 55% 0%, 78% 4%, 97% 1%, 100% 30%, 97% 58%, 100% 85%, 94% 100%, 70% 97%, 45% 100%, 20% 96%, 0% 100%, 3% 68%, 0% 36%);
-  box-shadow: 0 6px 18px rgba(24, 30, 18, 0.35);
+  box-shadow: 0 8px 20px rgba(60, 52, 28, 0.22);
 }
-.s1 { right: -46px; top: 54px; transform: rotate(9deg); }
-.s2 { left: -40px; bottom: 220px; transform: rotate(-7deg); }
+.pg1 { right: -62px; top: 36px; transform: rotate(6deg); }
+.pg2 { left: -58px; bottom: 200px; transform: rotate(-5deg); }
+
+/* torn felt patches in garden green */
+.d-patch {
+  clip-path: polygon(3% 8%, 22% 0%, 46% 5%, 72% 1%, 96% 7%, 100% 38%, 97% 70%, 100% 94%, 74% 100%, 48% 96%, 22% 100%, 0% 93%, 2% 60%, 0% 32%);
+  box-shadow: 0 6px 16px rgba(60, 64, 34, 0.24);
+}
+.h1 { width: 340px; height: 260px; left: -130px; top: 220px; background: var(--blob-a); opacity: 0.85; transform: rotate(-8deg); }
+.h2 { width: 300px; height: 230px; right: -120px; bottom: 130px; background: var(--blob-c); opacity: 0.8; transform: rotate(7deg); }
+
+/* oversized vintage blooms collaged around the edges */
+.d-bloom { opacity: 0.55; filter: saturate(0.78); }
+.d-bloom svg { display: block; width: 100%; height: 100%; }
+.fb1 { width: 300px; height: 300px; left: -115px; top: -34px; transform: rotate(-10deg); }
+.fb2 { width: 210px; height: 210px; right: -72px; top: 236px; transform: rotate(14deg); }
+.fb3 { width: 260px; height: 260px; right: -95px; bottom: -44px; transform: rotate(-6deg); }
+.fb4 { width: 190px; height: 190px; left: -64px; bottom: 30px; transform: rotate(9deg); opacity: 0.5; }
+
+/* gilded oval frame holding a pressed rose */
+.d-oframe {
+  width: 132px;
+  height: 165px;
+  left: -22px;
+  bottom: 470px;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 6px 12px rgba(70, 56, 22, 0.35));
+}
+
+/* keepsake discs with a soft iridescent sheen */
+.d-disc {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--board) 0 11%, transparent 11.5%),
+    conic-gradient(from 30deg, rgba(255, 255, 255, 0.5), rgba(255, 218, 235, 0.28), rgba(208, 232, 255, 0.4), rgba(255, 248, 216, 0.3), rgba(255, 255, 255, 0.5)),
+    repeating-radial-gradient(circle, var(--record-b) 0 2px, var(--record-a) 2px 5px);
+  box-shadow: 0 8px 20px rgba(60, 52, 28, 0.3), inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+.c1 { width: 195px; height: 195px; right: -85px; top: 44px; transform: rotate(12deg); }
+.c2 { width: 165px; height: 165px; right: -65px; top: 560px; transform: rotate(-9deg); }
 
 /* washi tape */
 .d-tape {
@@ -1585,10 +1689,6 @@ body.card-mode.theme-night .card-board::before {
 }
 .t1 { right: 22px; top: 388px; transform: rotate(38deg); }
 .t2 { left: 14px; top: 470px; transform: rotate(-24deg); }
-
-/* star sticker */
-.d-star { width: 64px; height: 64px; left: 20px; top: 34px; transform: rotate(-14deg); }
-.d-star path { fill: var(--star-fill); stroke: var(--star-stroke); stroke-width: 1.5; }
 
 /* the clipped note */
 .note-wrap {
@@ -1602,45 +1702,39 @@ body.card-mode.theme-night .card-board::before {
   from { opacity: 0; transform: translateY(26px) rotate(-3.5deg); }
   to   { opacity: 1; transform: translateY(0) rotate(-1.6deg); }
 }
-.note-clip {
-  position: absolute;
-  top: -56px;
-  left: 50%;
-  width: 96px;
-  height: 74px;
-  transform: translateX(-50%);
-  z-index: 3;
-  filter: drop-shadow(0 5px 8px rgba(20, 26, 16, 0.4));
-}
 .note {
   position: relative;
   background: var(--note-paper);
   color: var(--note-ink);
-  padding: 44px 34px 38px;
+  padding: 34px 32px 30px;
   clip-path: polygon(1% 2%, 8% 0%, 18% 1.4%, 30% 0.3%, 43% 1.6%, 55% 0.4%, 68% 1.8%, 80% 0.5%, 91% 1.6%, 99% 0.7%, 99.6% 12%, 98.9% 28%, 99.7% 46%, 98.7% 63%, 99.5% 80%, 98.9% 93%, 97% 99.4%, 86% 98.2%, 72% 99.6%, 58% 98.4%, 44% 99.7%, 30% 98.5%, 16% 99.5%, 5% 98.6%, 0.5% 99%, 1.2% 84%, 0.3% 66%, 1.5% 48%, 0.4% 30%, 1.3% 14%);
-  box-shadow: 0 18px 40px rgba(18, 24, 14, 0.45);
+  box-shadow: 0 18px 40px rgba(50, 44, 24, 0.35);
+  /* crumpled-paper feel: soft top light, pooled lower shade, and two
+     faint diagonal creases across the sheet */
   background-image:
-    radial-gradient(340px 200px at 20% 10%, rgba(255, 252, 240, 0.55) 0%, rgba(255, 252, 240, 0) 60%),
-    radial-gradient(300px 220px at 85% 90%, rgba(150, 130, 90, 0.14) 0%, rgba(150, 130, 90, 0) 60%);
+    linear-gradient(115deg, transparent 41%, rgba(120, 110, 80, 0.08) 43%, transparent 47%),
+    linear-gradient(63deg, transparent 60%, rgba(120, 110, 80, 0.07) 62%, transparent 66%),
+    radial-gradient(340px 200px at 20% 10%, rgba(255, 253, 246, 0.6) 0%, rgba(255, 253, 246, 0) 60%),
+    radial-gradient(300px 220px at 85% 90%, rgba(150, 130, 90, 0.13) 0%, rgba(150, 130, 90, 0) 60%);
 }
 .note-from,
 .note-for {
   font-family: 'Playfair Display', serif;
-  font-size: 1.06rem;
-  margin: 0 0 6px;
-  letter-spacing: 0.02em;
+  font-size: 0.85rem;
+  margin: 0 0 3px;
+  letter-spacing: 0.05em;
 }
 .note-from { color: var(--note-accent); }
-.note-for { margin-bottom: 20px; }
+.note-for { margin-bottom: 24px; }
 .note-body {
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-size: 1rem;
-  line-height: 1.85;
+  font-size: 1.24rem;
+  line-height: 1.7;
   white-space: pre-wrap;
   margin: 0;
   overflow-wrap: break-word;
-  min-height: 1.85em;
+  min-height: 1.7em;
 }
 /* blinking caret while the letter types itself in */
 .note-body.typing::after {
@@ -1671,29 +1765,32 @@ body.card-mode.theme-night .card-board::before {
   text-align: right;
 }
 
-/* alphabet tiles spelling the recipient */
+/* the recipient's name spelt on scattered instant-photo frames */
 .tile-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 10px 6px;
   margin-top: 54px;
   z-index: 2;
 }
 .tile {
-  width: 86px;
-  height: 96px;
-  background: var(--tile-bg);
-  border: 7px solid var(--tile-border);
-  border-radius: 6px;
+  width: 92px;
+  height: 112px;
+  background:
+    linear-gradient(var(--tile-border), var(--tile-border)) no-repeat 9px 9px / calc(100% - 18px) calc(100% - 34px),
+    var(--tile-bg);
+  border: none;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 18px;
   font-family: 'Playfair Display', serif;
   font-weight: 600;
-  font-size: 3rem;
+  font-size: 2.9rem;
   color: var(--tile-ink);
-  box-shadow: 0 10px 22px rgba(18, 24, 14, 0.4);
+  box-shadow: 0 12px 26px rgba(50, 44, 24, 0.32), inset 0 0 0 1px rgba(70, 66, 44, 0.06);
   transform: rotate(var(--tr, 0deg));
   animation: tileIn 0.7s cubic-bezier(0.3, 1.15, 0.4, 1) calc(0.7s + var(--i, 0) * 0.12s) both;
 }
@@ -1899,17 +1996,24 @@ ${FLOWER_SPRITE}
     <p class="open-hint" id="openHint">Tap to open</p>
   </div>
   <div id="cardView" class="card-board hidden">
-    <div class="decor d-blob b1"></div>
-    <div class="decor d-blob b2"></div>
-    <div class="decor d-blob b3"></div>
-    <div class="decor d-record"></div>
-    <div class="decor d-scrap s1">the afternoon kept its light a little longer, pressed here between the pages like a petal &mdash; proof that ordinary hours can be saved, folded, and sent on</div>
-    <div class="decor d-scrap s2">slow down, the ink whispers; every letter is a small parcel of time, carried by hand across the quiet distance between two people</div>
+    <div class="decor d-page pg1" aria-hidden="true">&hellip;une image rare de la lumi&egrave;re, la m&eacute;moire de ces apr&egrave;s-midis o&ugrave; les fleurs gardaient nos secrets ; chaque p&eacute;tale, une phrase d&eacute;licieuse de ce qui fut choisi, press&eacute;, gard&eacute; entre les pages&hellip;</div>
+    <div class="decor d-page pg2" aria-hidden="true">&hellip;est-il possible que le jardin se souvienne de nous ; on &eacute;crit pour que les heures ordinaires deviennent tendres, et que la distance apprenne la patience des roses&hellip;</div>
+    <div class="decor d-patch h1"></div>
+    <div class="decor d-patch h2"></div>
+    <span class="decor d-bloom fb1"><svg viewBox="0 0 100 100"><use href="#fl-rose"/></svg></span>
+    <span class="decor d-bloom fb2"><svg viewBox="0 0 100 100"><use href="#fl-cosmos"/></svg></span>
+    <span class="decor d-bloom fb3"><svg viewBox="0 0 100 100"><use href="#fl-dahlia-pe"/></svg></span>
+    <span class="decor d-bloom fb4"><svg viewBox="0 0 100 100"><use href="#fl-hydrangea"/></svg></span>
+    <svg class="decor d-oframe" viewBox="0 0 120 150" aria-hidden="true">
+      <ellipse cx="60" cy="75" rx="56" ry="71" fill="none" stroke="#c9a648" stroke-width="7"/>
+      <ellipse cx="60" cy="75" rx="49" ry="64" fill="#f4eedd" stroke="#b08d35" stroke-width="2"/>
+      <g transform="translate(19 34) scale(0.82)"><use href="#fl-rose"/></g>
+    </svg>
+    <div class="decor d-disc c1"></div>
+    <div class="decor d-disc c2"></div>
     <div class="decor d-tape t1"></div>
     <div class="decor d-tape t2"></div>
-    <svg class="decor d-star" viewBox="0 0 44 44"><path d="M22 3 L27 16 L41 17 L30 26 L34 40 L22 32 L10 40 L14 26 L3 17 L17 16 Z"/></svg>
     <div class="note-wrap">
-      <svg class="note-clip" viewBox="0 0 120 92" aria-hidden="true"><defs><linearGradient id="clipg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8bd7e"/><stop offset=".5" stop-color="#b3924e"/><stop offset="1" stop-color="#8f7136"/></linearGradient></defs><path fill="url(#clipg)" fill-rule="evenodd" d="M34 90 L86 90 L80 38 L74 30 L70 22 Q70 12 60 12 Q50 12 50 22 L46 30 L40 38 Z M60 26 a7 7 0 1 0 0.01 0 Z"/><rect x="30" y="86" width="60" height="6" rx="2" fill="#a3854a"/><rect x="38" y="52" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/><rect x="38" y="60" width="44" height="3" rx="1.5" fill="#8f7136" opacity=".6"/></svg>
       <div class="note">
         <p class="note-from" id="letterFrom"></p>
         <p class="note-for" id="letterTo"></p>
@@ -1980,6 +2084,24 @@ ${FLOWER_SPRITE}
       if (!usePassphrase.checked) passphraseInput.value = '';
     });
 
+    // live preview: the note repaints as the sender types, and takes on
+    // the palette of whichever card theme is selected
+    const pvBoard = $('previewBoard');
+    function updatePreview() {
+      const themeInput = form.querySelector('input[name="theme"]:checked');
+      pvBoard.className = 'preview-board pv-' + (themeInput ? themeInput.value : 'garden');
+      const to = $('toName').value.trim();
+      const from = $('fromName').value.trim();
+      const msg = $('message').value.trim();
+      $('pvFrom').textContent = 'From: ' + (from || '…');
+      $('pvTo').textContent = 'For ' + (to || 'you');
+      $('pvBody').textContent = msg || 'Your words will bloom here as you write…';
+      $('pvSign').textContent = from ? '— ' + from : '';
+    }
+    ['toName', 'fromName', 'message'].forEach((id) => $(id).addEventListener('input', updatePreview));
+    $('themeRow').addEventListener('change', updatePreview);
+    updatePreview();
+
     function downloadGiftFile(wrapper, toName) {
       const html = buildStandaloneHtml(wrapper);
       const blob = new Blob([html], { type: 'text/html' });
@@ -2007,6 +2129,23 @@ ${FLOWER_SPRITE}
         theme: themeInput ? themeInput.value : 'garden',
         date: new Date().toISOString()
       };
+      // optional "seal until" moment — the letter stays behind a
+      // countdown until it arrives
+      const openAtRaw = $('openAt').value;
+      const sealHint = $('sealHint');
+      if (!sealHint.dataset.orig) sealHint.dataset.orig = sealHint.textContent;
+      if (openAtRaw) {
+        const openAtDate = new Date(openAtRaw);
+        if (isNaN(openAtDate) || openAtDate.getTime() <= Date.now()) {
+          sealHint.classList.add('field-error');
+          sealHint.textContent = 'That moment has already passed — pick a future date, or clear it to send an unsealed letter.';
+          $('openAt').focus();
+          return;
+        }
+        data.openAt = openAtDate.toISOString();
+      }
+      sealHint.classList.remove('field-error');
+      sealHint.textContent = sealHint.dataset.orig;
       if (!data.to || !data.from || !data.message) return;
 
       const passphrase = usePassphrase.checked ? passphraseInput.value : '';
@@ -2086,6 +2225,7 @@ ${FLOWER_SPRITE}
       form.reset();
       passphraseInput.classList.add('hidden');
       resultCard.classList.add('hidden');
+      updatePreview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
