@@ -12,7 +12,7 @@
      for the 10-minute setup. If the Worker is ever unreachable the app
      automatically falls back to a self-contained link, so gifts always
      work. */
-  const GIFT_API = '';
+  const GIFT_API = 'https://bloom-gifts.<your-subdomain>.workers.dev';
 
   /* ---------------- base64url helpers (used inside generated gift files) ---------------- */
   function bytesToBase64(bytes) {
